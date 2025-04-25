@@ -1,0 +1,44 @@
+name: pangea
+description: A Flutter app to reconstruct Pangea with toggleable PNG layers and drag/rotate 10 continents.
+publish_to: 'none'
+version: 1.0.0+1
+
+environment:
+  sdk: '>=2.18.0 <3.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/antartica.png
+    - assets/antartica_glaciers.png
+    - assets/antartica_fossils.png
+    - assets/australia.png
+    - assets/australia_glaciers.png
+    - assets/australia_fossils.png
+    - assets/africa.png
+    - assets/africa_glaciers.png
+    - assets/africa_fossils.png
+    - assets/africa_rocks.png
+    - assets/eurasia.png
+    - assets/eurasia_rocks.png
+    - assets/india.png
+    - assets/india_glaciers.png
+    - assets/india_fossils.png
+    - assets/madagascar.png
+    - assets/madagascar_glaciers.png
+    - assets/madagascar_fossils.png
+    - assets/north_america.png
+    - assets/north_america_rocks.png
+    - assets/south_america.png
+    - assets/south_america_glaciers.png
+    - assets/south_america_fossils.png
+    - assets/south_america_rocks.png
+    - assets/arabia.png
