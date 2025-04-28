@@ -56894,10 +56894,10 @@ A.GE.prototype={
 R(a){var s,r,q,p,o,n,m=this,l=null,k=A.a5Y(!0,l,!0,!0,l,l,!1)
 k.jY()
 s=t.nA
-r=A.b([A.aaE(0,A.zZ("assets/background.png",new A.a2_(),B.vn)),A.a5H(l,l,B.vS,B.Gt)],s)
+r=A.b([A.aaE(0,A.zZ("assets/background.png",new A.a2_(),B.vm)),A.a5H(l,l,B.vS,B.Gt)],s)
 for(q=t.fs,p=0;p<10;++p){o=B.Aj[p]
 n=o.a
-r.push(new A.qR(n,o.b,new A.r(B.oE.j(0,n).a*1200,B.oE.j(0,n).b*800),m.d,m.e,m.f,m.r,new A.i6(n,q)))}r=A.zs(A.zJ(B.bO,A.LL(new A.zw(B.vm,B.v6,A.abf(A.CS(B.d8,r,B.ad,B.ev),800,1200),l),l,l),B.aX,!1,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,new A.a20(m),l),1)
+r.push(new A.qR(n,o.b,new A.r(B.oE.j(0,n).a*1200,B.oE.j(0,n).b*800),m.d,m.e,m.f,m.r,new A.i6(n,q)))}r=A.zs(A.zJ(B.bO,A.LL(new A.zw(B.vn,B.v6,A.abf(A.CS(B.d8,r,B.ad,B.ev),800,1200),l),l,l),B.aX,!1,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,new A.a20(m),l),1)
 q=m.r
 n=q?B.yI:B.yH
 return new A.t0(k,new A.a21(m),A.a8S(A.b([r,new A.hN(B.yi,A.a8S(A.b([A.ab_(A.b([B.KE,B.GE,A.a9N(l,l,A.a9M(n,q?B.cJ:B.m,l),l,l,new A.a22(m),l,l,"Toggle rotate mode (R)")],s),B.be,B.e3),A.ab_(A.b([A.zs(A.a5w(B.dR,new A.a23(m),B.KG,m.d),1),A.zs(A.a5w(B.dR,new A.a24(m),B.KD,m.e),1),A.zs(A.a5w(B.dR,new A.a25(m),B.KC,m.f),1)],s),B.be,B.e3)],s),B.bd,B.bm),l)],s),B.be,B.bm),l)}}
@@ -59023,8 +59023,8 @@ B.vk=new A.pc(null,null,null,null,null,null,null,null,null,null,null,null,null,n
 B.vl=new A.pd(null,null,null,null,null,null,null,null,null,null,null,null,null)
 B.i3=new A.aq(0,1/0,0,1/0)
 B.i4=new A.aq(1/0,1/0,1/0,1/0)
-B.vm=new A.pe(1,"contain")
-B.vn=new A.pe(2,"cover")
+B.vm=new A.pe(2,"cover")
+B.vn=new A.pe(3,"fitWidth")
 B.vo=new A.pe(6,"scaleDown")
 B.i5=new A.pf(0,"tight")
 B.vp=new A.pf(1,"max")
