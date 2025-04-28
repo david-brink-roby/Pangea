@@ -3,9 +3,9 @@ const MANIFEST = 'flutter-app-manifest';
 const TEMP = 'flutter-temp-cache';
 const CACHE_NAME = 'flutter-app-cache';
 
-const RESOURCES = {"assets/AssetManifest.bin": "8abce4734cf949a49cab31d675842cf7",
-"assets/AssetManifest.bin.json": "26f834cb4ee34f10527bf395a104588e",
-"assets/AssetManifest.json": "335f92003f29b9806db3666661302eb4",
+const RESOURCES = {"assets/AssetManifest.bin": "9d039d36c560cef59ba16156f8465642",
+"assets/AssetManifest.bin.json": "dec08ae3788035f91ce9309e362d593b",
+"assets/AssetManifest.json": "ce1376d7db6746d076ae5067170aedf7",
 "assets/assets/africa.png": "deaa92f304ad2adafac8a7b7d40c1eea",
 "assets/assets/africa_fossils.png": "baab2b80451d9f78ed2ce4a307c38054",
 "assets/assets/africa_glaciers.png": "f8839c9e8582fcead6ab8b13bfc2bafb",
@@ -19,6 +19,7 @@ const RESOURCES = {"assets/AssetManifest.bin": "8abce4734cf949a49cab31d675842cf7
 "assets/assets/australia_glaciers.png": "9d4040e00a19d54359d9ad5767269964",
 "assets/assets/eurasia.png": "c70a4f3d3e18b37813255c490329e9a0",
 "assets/assets/eurasia_rocks.png": "e3efd3ec270de7bbcd302110dcf0113f",
+"assets/assets/fonts/NotoSans-Regular.ttf": "28ffc9e17c88630d93bf3fe92a687d04",
 "assets/assets/greenland.png": "5e12a5ed98fe23275d9670a774e0d1d7",
 "assets/assets/india.png": "a8f1c6411449205cbd9e27ba9cc63a8b",
 "assets/assets/india_fossils.png": "50d0f6ea1c77b8e93ab54f716389fbc0",
@@ -32,7 +33,7 @@ const RESOURCES = {"assets/AssetManifest.bin": "8abce4734cf949a49cab31d675842cf7
 "assets/assets/south_america_fossils.png": "e7cfa106cd4e17735a95813a5c47462a",
 "assets/assets/south_america_glaciers.png": "da98d3ec6bda564e2c5d4ae3f7ff8ad9",
 "assets/assets/south_america_rocks.png": "74a9a28b59f8711e2b41b769898d2d03",
-"assets/FontManifest.json": "7b2a36307916a9721811788013e65289",
+"assets/FontManifest.json": "451b916173f2bc9f417bbafd8bf5408c",
 "assets/fonts/MaterialIcons-Regular.otf": "e7069dfd19b331be16bed984668fe080",
 "assets/NOTICES": "8c997229e13f4879c73ee476e34f61fb",
 "assets/shaders/ink_sparkle.frag": "ecc85a2e95f5e9f53123dcaf8cb9b6ce",
@@ -50,14 +51,14 @@ const RESOURCES = {"assets/AssetManifest.bin": "8abce4734cf949a49cab31d675842cf7
 "canvaskit/skwasm_st.wasm": "56c3973560dfcbf28ce47cebe40f3206",
 "favicon.png": "5dcef449791fa27946b3d35ad8803796",
 "flutter.js": "76f08d47ff9f5715220992f993002504",
-"flutter_bootstrap.js": "c1dcf3420dcd78bbe5e1a297e600c1cc",
+"flutter_bootstrap.js": "732c2ad2a9b017f26e72b58bc1bcc07e",
 "icons/Icon-192.png": "ac9a721a12bbc803b44f645561ecb1e1",
 "icons/Icon-512.png": "96e752610906ba2a93c65f8abe1645f1",
 "icons/Icon-maskable-192.png": "c457ef57daa1d16f64b27b786ec2ea3c",
 "icons/Icon-maskable-512.png": "301a7604d45b3e739efc881eb04896ea",
 "index.html": "de9bd29508bafbdf80951d0218849153",
 "/": "de9bd29508bafbdf80951d0218849153",
-"main.dart.js": "5920ff7346c1d9cfe551c64eb7346709",
+"main.dart.js": "e63fdbb026f271ca3b1abbe020afb12e",
 "manifest.json": "86b6c8ee9e53441604080fc344a53eb7",
 "version.json": "88c37cb86d6ac92816be1bb8c1272fac"};
 // The application shell files that are downloaded before a service worker can
