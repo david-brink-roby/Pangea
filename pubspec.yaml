@@ -43,3 +43,10 @@ flutter:
     - assets/eurasia_rocks.png
     - assets/arabia.png
     - assets/greenland.png
+    - assets/rotate_hint.png
+  
+    
+  fonts:
+    - family: NotoSans
+      fonts:
+        - asset: assets/fonts/NotoSans-Regular.ttf
