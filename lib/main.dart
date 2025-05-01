@@ -117,16 +117,16 @@ class _PangeaMapState extends State<PangeaMap> {
 
   // Absolute positions provided by user
   static const Map<String, Offset> absoluteStart = {
-    'greenland':     Offset(385.1, -6.7),
+    'greenland': Offset(385.1, -6.7),
     'north_america': Offset(68.9, -35.6),
     'south_america': Offset(192.9, 234.1),
-    'africa':        Offset(414.8, 130.4),
-    'eurasia':       Offset(432.1, -169.2),
-    'india':         Offset(717.1, 161.9),
-    'arabia':        Offset(643.9, 165.8),
-    'madagascar':    Offset(661.7, 337.9),
-    'australia':     Offset(768.7, 328.6),
-    'antartica':     Offset(442.9, 419.4),
+    'africa': Offset(414.8, 130.4),
+    'eurasia': Offset(432.1, -169.2),
+    'india': Offset(717.1, 161.9),
+    'arabia': Offset(643.9, 165.8),
+    'madagascar': Offset(661.7, 337.9),
+    'australia': Offset(768.7, 328.6),
+    'antartica': Offset(442.9, 419.4),
   };
 
   // Convert to normalized coords [0..1]
@@ -157,7 +157,37 @@ class _PangeaMapState extends State<PangeaMap> {
     normalizedStart.forEach((key, value) {
       currentPos[key] = Offset(value.dx * designWidth, value.dy * designHeight);
     });
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+    showDialog<void>(
+      context: context,
+      builder: (_) => AlertDialog(
+        title: const Text('Reconstruct Pangea'),
+        content: const Text(
+          '• To move a continent: left-click and drag it.\n'
+          '• To rotate: enter Rotate Mode (hit “R” or tap the rotate button), then drag horizontally.\n'
+          '• To rotate on mobile: either tap the rotate button or use two fingers to pinch and rotate.\n'
+          '• Toggle rotation mode: press the rotate icon in the Layers menu.\n'
+          '• Layer controls & legend: open the menu (top-left) to select Fossils, Glaciers, or Rocks, and view the key (bottom-right).\n'
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: const Text('Ok'),
+          ),
+        ],
+      ),
+    );
+  });
   }
+
+  void _resetPositions() {
+  setState(() {
+    normalizedStart.forEach((key, norm) {
+      currentPos[key] = Offset(norm.dx * designWidth, norm.dy * designHeight);
+    });
+  });
+}
+
 
   void _onPositionChanged(String name, Offset pos) {
     setState(() {
@@ -318,6 +348,37 @@ class _PangeaMapState extends State<PangeaMap> {
                               ),
                             ),
                           ),
+                        Positioned(
+                          right: 8,
+                          top: 8,
+                          child: IconButton(
+                            icon: const Icon(Icons.delete, color: Colors.red),
+                            onPressed: () async {
+                              final confirm = await showDialog<bool>(
+                                context: context,
+                                builder: (_) => AlertDialog(
+                                  title: const Text('Reset Positions?'),
+                                  content: const Text(
+                                    'Are you sure you want to reset all continent positions to original?'
+                                  ),
+                                  actions: [
+                                    TextButton(
+                                      onPressed: () => Navigator.of(context).pop(false),
+                                      child: const Text('Cancel'),
+                                    ),
+                                    TextButton(
+                                      onPressed: () => Navigator.of(context).pop(true),
+                                      child: const Text('Yes'),
+                                    ),
+                                  ],
+                                ),
+                              );
+                              if (confirm == true) {
+                                _resetPositions();
+                              }
+                            },
+                          ),
+                        ),
 
                         // Key (legend) button bottom-right
                         Positioned(
@@ -394,11 +455,23 @@ class _InteractiveContinentState extends State<InteractiveContinent> {
   late Offset _startPtr, _startPos;
   late double _startRot;
 
-  @override
+    @override
   void initState() {
     super.initState();
+    // start at the passed-in initialPosition
     position = widget.initialPosition;
     _loadImage();
+  }
+
+  @override
+  void didUpdateWidget(covariant InteractiveContinent oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    // if the parent’s initialPosition changed (e.g. via reset), update our position
+    if (oldWidget.initialPosition != widget.initialPosition) {
+      setState(() {
+        position = widget.initialPosition;
+      });
+    }
   }
 
   Future<void> _loadImage() async {
