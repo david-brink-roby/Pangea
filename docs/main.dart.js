@@ -57565,17 +57565,17 @@ T(a){var s=null,r=A.a6y(!0,s,!0,!0,s,s,!1)
 r.kn()
 return new A.t7(r,new A.a2z(this),new A.AB(new A.a2A(this,a),s),s)}}
 A.a2F.prototype={
-$2(a,b){return new A.aP(a,new A.q(b.a/1200,b.b/600),t.d3)},
+$2(a,b){return new A.aP(a,new A.q(b.a/1200,b.b/500),t.d3)},
 $S:377}
 A.a2d.prototype={
 $0(){var s=this.a
 s.gHL().X(0,new A.a2c(s));++s.y},
 $S:0}
 A.a2c.prototype={
-$2(a,b){this.a.at.m(0,a,new A.q(b.a*1200,b.b*600))},
+$2(a,b){this.a.at.m(0,a,new A.q(b.a*1200,b.b*500))},
 $S:77}
 A.a2D.prototype={
-$2(a,b){this.a.at.m(0,a,new A.q(b.a*1200,b.b*600))},
+$2(a,b){this.a.at.m(0,a,new A.q(b.a*1200,b.b*500))},
 $S:77}
 A.a2E.prototype={
 $1(a){var s=this.a,r=s.c
@@ -57602,7 +57602,7 @@ $0(){var s=$.xG().d,r=A.l(s).h("b_<2>")
 this.a.r=A.dx(new A.b_(s,r),r.h("p.E")).n(0,B.k1)},
 $S:0}
 A.a2A.prototype={
-$2(a,b){var s,r,q,p,o,n,m,l=null,k=b.b,j=k/1200,i=this.a,h=t.g,g=A.b([A.akX(0,A.mS("assets/background.png",new A.a2o(),B.vB,l,l)),A.a6i(l,l,l,B.z0,new A.K(1200,600))],h)
+$2(a,b){var s,r,q,p,o,n,m,l=null,k=b.b,j=k/1200,i=this.a,h=t.g,g=A.b([A.akX(0,A.mS("assets/background.png",new A.a2o(),B.vB,l,l)),A.a6i(l,l,l,B.z0,new A.K(1200,500))],h)
 for(s=t.fs,r=i.at,q=i.gSM(),p=0;p<10;++p){o=B.AH[p]
 n=o.a
 m=r.j(0,n)
@@ -57614,7 +57614,7 @@ q=r?B.z5:B.z4
 g.push(A.jl(l,A.pN(A.a9D(A.b([A.alo(A.b([B.L0,B.H_,s,B.H5,A.Pw(l,l,A.ajE(q,r?B.cQ:B.y,l),l,new A.a2q(i),l)],h),B.oU),A.a68(B.e_,new A.a2r(i),B.L9,i.d),A.a68(B.e_,new A.a2s(i),B.L6,i.e),A.a68(B.e_,new A.a2t(i),B.L7,i.f),B.yo,new A.zv(i.gPf(),l,l,l,l,l,l,!1,l,!0,l,B.L2,l)],h),B.bH,B.h7),B.z,l,l,l,B.jq,200),l,l,8,l,56,l))}g.push(A.jl(l,A.Pw(l,l,B.z8,l,new A.a2u(i,this.b),l),l,l,l,8,8,l))
 g.push(A.jl(8,A.Pw(B.y,l,B.jC,l,new A.a2v(i),l),l,l,l,8,l,l))
 if(i.x)g.push(A.jl(56,A.pN(new A.a2w(i).$0(),B.z,l,l,l,B.yH,120),l,l,l,8,l,l))
-return A.ub(B.ce,A.b([A.zZ(B.cy,A.pN(new A.zL(B.vC,B.vk,A.a7s(A.ub(B.ce,g,B.d5),600,1200),l),B.G,l,600*j,l,l,k),B.b0,!1,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,new A.a2x(i,a,j),l)],h),B.d5)},
+return A.ub(B.ce,A.b([A.zZ(B.cy,A.pN(new A.zL(B.vC,B.vk,A.a7s(A.ub(B.ce,g,B.d5),500,1200),l),B.G,l,500*j,l,l,k),B.b0,!1,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,new A.a2x(i,a,j),l)],h),B.d5)},
 $S:379}
 A.a2x.prototype={
 $1(a){var s=this.a
@@ -57827,7 +57827,7 @@ g=new A.a6(j,new A.a1o(),k).kj(0,B.ik)
 f=new A.a6(j,new A.a1p(),k).kj(0,B.il)
 e=(h-i)/2
 d=(f-g)/2
-b.aq(new A.a1q(b,B.c.dv(s.a+(r.a-q.a),0-i-e,1200-h+e),B.c.dv(s.b+(r.b-q.b),0-g-d,600-f+d)))}else if(b.y){if(a.w>1)c=a.r
+b.aq(new A.a1q(b,B.c.dv(s.a+(r.a-q.a),0-i-e,1200-h+e),B.c.dv(s.b+(r.b-q.b),0-g-d,500-f+d)))}else if(b.y){if(a.w>1)c=a.r
 else{s=b.z
 s===$&&A.c()
 c=(a.b.a-s.a)*0.01}b.aq(new A.a1r(b,c))}},
