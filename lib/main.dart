@@ -10,7 +10,10 @@ const int kPrimaryMouseButton = 1;
 
 /// “Design” canvas size your map was authored at.
 const double designWidth = 1200;
-const double designHeight = 650;
+const double designHeight = 500;
+
+ /// How big each continent should be, *before* we fit the whole canvas to the screen.
+  double continentBaseScale = .8; // try 0.8, 1.2, etc.
 
 void main() => runApp(const PangeaApp());
 
@@ -105,28 +108,27 @@ class PangeaMap extends StatefulWidget {
   @override
   _PangeaMapState createState() => _PangeaMapState();
 }
-
 class _PangeaMapState extends State<PangeaMap> {
-  bool showFossils  = true;
-  bool showGlaciers = false;
-  bool showRocks    = false;
-  bool rotateMode   = false;
-  bool showMenu     = false;
-  bool showKey      = false;
+  bool showFossils     = true;
+  bool showGlaciers    = false;
+  bool showRocks       = false;
+  bool rotateMode      = false;
+  bool showBottomMenu  = false;
+  int  resetCounter    = 0;
   Offset? tapped;
 
   // Absolute positions provided by user
   static const Map<String, Offset> absoluteStart = {
-    'greenland': Offset(385.1, -6.7),
-    'north_america': Offset(68.9, -35.6),
-    'south_america': Offset(192.9, 234.1),
-    'africa': Offset(414.8, 130.4),
-    'eurasia': Offset(432.1, -169.2),
-    'india': Offset(717.1, 161.9),
-    'arabia': Offset(643.9, 165.8),
-    'madagascar': Offset(661.7, 337.9),
-    'australia': Offset(768.7, 328.6),
-    'antartica': Offset(442.9, 419.4),
+    'greenland':     Offset(411.8, -48.0),
+    'north_america': Offset(64.9, -84.3),
+    'south_america': Offset(173.6, 138.1),
+    'africa':        Offset(382.8, 38.4),
+    'eurasia':       Offset(366.8, -230.5),
+    'india':         Offset(647.8, 85.9),
+    'arabia':        Offset(591.2, 91.8),
+    'madagascar':    Offset(624.4, 238.6),
+    'australia':     Offset(784.7, 205.9),
+    'antartica':     Offset(451.6, 291.4),
   };
 
   // Convert to normalized coords [0..1]
@@ -137,6 +139,7 @@ class _PangeaMapState extends State<PangeaMap> {
     ),
   );
   final List<Continent> continents = const [
+    Continent('madagascar', ['glaciers', 'fossils']),
     Continent('greenland', []),
     Continent('north_america', ['rocks']),
     Continent('south_america', ['glaciers', 'fossils', 'rocks']),
@@ -144,50 +147,55 @@ class _PangeaMapState extends State<PangeaMap> {
     Continent('eurasia', ['rocks']),
     Continent('india', ['glaciers', 'fossils']),
     Continent('arabia', []),
-    Continent('madagascar', ['glaciers', 'fossils']),
     Continent('australia', ['glaciers', 'fossils']),
     Continent('antartica', ['glaciers', 'fossils']),
   ];
 
   final Map<String, Offset> currentPos = {};
 
+  void _resetPositions() {
+    setState(() {
+      normalizedStart.forEach((key, norm) {
+        currentPos[key] = Offset(
+          norm.dx * designWidth,
+          norm.dy * designHeight,
+        );
+      });
+      resetCounter++;
+    });
+  }
+
   @override
   void initState() {
     super.initState();
     normalizedStart.forEach((key, value) {
-      currentPos[key] = Offset(value.dx * designWidth, value.dy * designHeight);
+      currentPos[key] = Offset(
+        value.dx * designWidth,
+        value.dy * designHeight,
+      );
     });
     WidgetsBinding.instance.addPostFrameCallback((_) {
-    showDialog<void>(
-      context: context,
-      builder: (_) => AlertDialog(
-        title: const Text('Reconstruct Pangea'),
-        content: const Text(
-          '• To move a continent: left-click and drag it.\n'
-          '• To rotate: enter Rotate Mode (hit “R” or tap the rotate button), then drag horizontally.\n'
-          '• To rotate on mobile: either tap the rotate button or use two fingers to pinch and rotate.\n'
-          '• Toggle rotation mode: press the rotate icon in the Layers menu.\n'
-          '• Layer controls & legend: open the menu (top-left) to select Fossils, Glaciers, or Rocks, and view the key (bottom-right).\n'
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: const Text('Ok'),
+      showDialog<void>(
+        context: context,
+        builder: (_) => AlertDialog(
+          title: const Text('Reconstruct Pangea'),
+          content: const Text(
+            '• To move a continent: left-click and drag it.\n'
+            '• To rotate: enter Rotate Mode (hit “R” or tap the rotate button), then drag horizontally.\n'
+            '• To rotate on mobile: either tap the rotate button or use two fingers to pinch and rotate.\n'
+            '• Toggle rotation mode: press the rotate icon at top-right.\n'
+            '• Layer & legend: use the bottom-right menu to pick a layer and see its key.\n'
           ),
-        ],
-      ),
-    );
-  });
-  }
-
-  void _resetPositions() {
-  setState(() {
-    normalizedStart.forEach((key, norm) {
-      currentPos[key] = Offset(norm.dx * designWidth, norm.dy * designHeight);
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text('Ok'),
+            ),
+          ],
+        ),
+      );
     });
-  });
-}
-
+  }
 
   void _onPositionChanged(String name, Offset pos) {
     setState(() {
@@ -216,218 +224,269 @@ class _PangeaMapState extends State<PangeaMap> {
         final availW = constraints.maxWidth;
         final scale  = availW / designWidth;
 
+        // ensure Madagascar is drawn first (in back):
+        final ordered = [
+          continents.firstWhere((c) => c.name == 'madagascar'),
+          ...continents.where((c) => c.name != 'madagascar'),
+        ];
+
         return Stack(
           children: [
-            GestureDetector(
-              behavior: HitTestBehavior.translucent,
-              onTapDown: (details) {
-                final r  = ctx.findRenderObject() as RenderBox;
-                final local = r.globalToLocal(details.globalPosition);
-                setState(() => tapped = local / scale);
-              },
-              child: Container(
-                width: availW,
-                height: designHeight * scale,
-                color: Colors.transparent,
-                child: FittedBox(
-                  fit: BoxFit.fitWidth,
-                  alignment: Alignment.topLeft,
-                  child: SizedBox(
-                    width: designWidth,
-                    height: designHeight,
-                    child: Stack(
-                      children: [
-                        Positioned.fill(
-                          child: Image.asset(
-                            'assets/background.png',
-                            fit: BoxFit.cover,
-                            errorBuilder: (_,__,___) =>
+            // ─── the map canvas ──────────────────────
+            Positioned.fill(
+              child: GestureDetector(
+                behavior: HitTestBehavior.translucent,
+                onTapDown: (details) {
+                  final r     = ctx.findRenderObject() as RenderBox;
+                  final local = r.globalToLocal(details.globalPosition);
+                  setState(() => tapped = local / scale);
+                },
+                child: Container(
+                  width: availW,
+                  height: designHeight * scale,
+                  color: Colors.transparent,
+                  child: FittedBox(
+                    fit: BoxFit.fitWidth,
+                    alignment: Alignment.topLeft,
+                    child: SizedBox(
+                      width: designWidth,
+                      height: designHeight,
+                      child: Stack(
+                        children: [
+                          // background + grid
+                          Positioned.fill(
+                            child: Image.asset(
+                              'assets/background.png',
+                              fit: BoxFit.cover,
+                              errorBuilder: (_,__,___)=>
                                 Container(color: Colors.grey[300]),
+                            ),
                           ),
-                        ),
-                        CustomPaint(
-                          size: Size(designWidth, designHeight),
-                          painter: const GridPainter(
-                            gridSize: 50,
-                            lineColor: Color.fromRGBO(128,128,128,0.5),
+                          CustomPaint(
+                            size: Size(designWidth, designHeight),
+                            painter: const GridPainter(
+                              gridSize: 50,
+                              lineColor: Color.fromRGBO(128,128,128,0.5),
+                            ),
                           ),
-                        ),
-                        if (tapped != null) ...[
+
+                          // continents, Madagascar first
+                          for (final c in ordered)
+                            InteractiveContinent(
+                              key: ValueKey(c.name),
+                              name: c.name,
+                              overlays: c.overlays,
+                              initialPosition: currentPos[c.name]!,
+                              resetCounter: resetCounter,
+                              showFossils:  showFossils,
+                              showGlaciers: showGlaciers,
+                              showRocks:    showRocks,
+                              rotateMode:   rotateMode,
+                              onPositionChanged: _onPositionChanged,
+                              continentScale: continentBaseScale,
+                            ),
+
+                          // Dump‐coords button (for dev)
                           Positioned(
-                            left: tapped!.dx - 10,
-                            top: tapped!.dy,
-                            child: Container(width:20, height:1, color:Colors.red),
-                          ),
-                          Positioned(
-                            left: tapped!.dx,
-                            top: tapped!.dy - 10,
-                            child: Container(width:1, height:20, color:Colors.red),
+                            left: 8, top: 8,
+                            child: ElevatedButton(
+                              onPressed: _dumpCoords,
+                              child: const Text('Dump coords'),
+                            ),
                           ),
                         ],
-                        for (final c in continents)
-                          InteractiveContinent(
-                            key: ValueKey(c.name),
-                            name: c.name,
-                            overlays: c.overlays,
-                            initialPosition: currentPos[c.name]!,
-                            showFossils: showFossils,
-                            showGlaciers: showGlaciers,
-                            showRocks: showRocks,
-                            rotateMode: rotateMode,
-                            onPositionChanged: _onPositionChanged,
-                          ),
-
-                        // Layers button top-left
-                        Positioned(
-                          left: 8, top: 8,
-                          child: IconButton(
-                            icon: const Icon(Icons.menu),
-                            color: Colors.black87,
-                            onPressed: () => setState(() => showMenu = !showMenu),
-                          ),
-                        ),
-                        if (showMenu)
-                          Positioned(
-                            left: 8, top: 56,
-                            child: Container(
-                              width: 200,
-                              padding: const EdgeInsets.all(8),
-                              color: Colors.white70,
-                              child: Column(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Row(
-                                     children: [
-                                      const Text('Rotate', style: TextStyle(fontSize:14)),
-                                      const SizedBox(width:6),
-                                      Image.asset('assets/rotate_hint.png', width:20, height:20),
-                                      const Spacer(),
-                                      IconButton(
-                                        icon: Icon(
-                                          rotateMode
-                                            ? Icons.rotate_right_outlined
-                                            : Icons.rotate_right,
-                                        ),
-                                        onPressed: () => setState(() => rotateMode = !rotateMode),
-                                      ),
-                                    ],
-                                  ),
-                                  CheckboxListTile(
-                                    title: const Text('Fossils'),
-                                    value: showFossils,
-                                    controlAffinity: ListTileControlAffinity.leading,
-                                    onChanged: (v) => setState(() {
-                                      showFossils = v!;
-                                      if (v) showGlaciers = showRocks = false;
-                                    }),
-                                  ),
-                                  CheckboxListTile(
-                                    title: const Text('Glaciers'),
-                                    value: showGlaciers,
-                                    controlAffinity: ListTileControlAffinity.leading,
-                                    onChanged: (v) => setState(() {
-                                      showGlaciers = v!;
-                                      if (v) showFossils = showRocks = false;
-                                    }),
-                                  ),
-                                  CheckboxListTile(
-                                    title: const Text('Rocks'),
-                                    value: showRocks,
-                                    controlAffinity: ListTileControlAffinity.leading,
-                                    onChanged: (v) => setState(() {
-                                      showRocks = v!;
-                                      if (v) showFossils = showGlaciers = false;
-                                    }),
-                                  ),
-                                  const Divider(),
-                                  ElevatedButton(
-                                    onPressed: _dumpCoords,
-                                    child: const Text('Dump coords'),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        Positioned(
-                          right: 8,
-                          top: 8,
-                          child: IconButton(
-                            icon: const Icon(Icons.delete, color: Colors.red),
-                            onPressed: () async {
-                              final confirm = await showDialog<bool>(
-                                context: context,
-                                builder: (_) => AlertDialog(
-                                  title: const Text('Reset Positions?'),
-                                  content: const Text(
-                                    'Are you sure you want to reset all continent positions to original?'
-                                  ),
-                                  actions: [
-                                    TextButton(
-                                      onPressed: () => Navigator.of(context).pop(false),
-                                      child: const Text('Cancel'),
-                                    ),
-                                    TextButton(
-                                      onPressed: () => Navigator.of(context).pop(true),
-                                      child: const Text('Yes'),
-                                    ),
-                                  ],
-                                ),
-                              );
-                              if (confirm == true) {
-                                _resetPositions();
-                              }
-                            },
-                          ),
-                        ),
-
-                        // Key (legend) button bottom-right
-                        Positioned(
-                          right: 8, bottom: 8,
-                          child: IconButton(
-                            icon: const Icon(Icons.menu),
-                            color: Colors.black87,
-                            onPressed: () => setState(() => showKey = !showKey),
-                          ),
-                        ),
-                        if (showKey)
-                          Positioned(
-                            right: 8, bottom: 56,
-                            child: Container(
-                              width: 120,
-                              padding: const EdgeInsets.all(4),
-                              color: Colors.white70,
-                              child: () {
-                                String asset;
-                                if (showFossils)      asset = 'assets/key_fossils.png';
-                                else if (showGlaciers) asset = 'assets/key_glaciers.png';
-                                else if (showRocks)    asset = 'assets/key_rocks.png';
-                                else                   asset = '';
-                                return asset.isNotEmpty
-                                  ? Image.asset(asset, fit: BoxFit.contain)
-                                  : const SizedBox.shrink();
-                              }(),
-                            ),
-                          ),
-
-                      ],
+                      ),
                     ),
                   ),
                 ),
               ),
             ),
+
+            // ─── top-right: Reset + Rotate ───────────
+            Positioned(
+              top: 8,
+              right: 8,
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  IconButton(
+                    icon: const Icon(Icons.delete, color: Colors.red),
+                    onPressed: () async {
+                      final confirm = await showDialog<bool>(
+                        context: context,
+                        builder: (_) => AlertDialog(
+                          title: const Text('Reset Positions?'),
+                          content: const Text(
+                            'Are you sure you want to reset all continent positions?'
+                          ),
+                          actions: [
+                            TextButton(
+                              onPressed: () => Navigator.of(context).pop(false),
+                              child: const Text('Cancel'),
+                            ),
+                            TextButton(
+                              onPressed: () => Navigator.of(context).pop(true),
+                              child: const Text('Yes'),
+                            ),
+                          ],
+                        ),
+                      );
+                      if (confirm == true) _resetPositions();
+                    },
+                  ),
+                  IconButton(
+                    icon: Icon(
+                      rotateMode
+                        ? Icons.rotate_right_outlined
+                        : Icons.rotate_right,
+                      color: rotateMode ? Colors.blue : Colors.black87,
+                    ),
+                    tooltip: 'Toggle rotate mode (R)',
+                    onPressed: () =>
+                      setState(() => rotateMode = !rotateMode),
+                  ),
+                ],
+              ),
+            ),
+
+            // ─── bottom-right: hamburger for Layer+Key menu ───
+            Positioned(
+              bottom: 8,
+              right: 8,
+              child: IconButton(
+                icon: const Icon(Icons.menu),
+                color: Colors.black87,
+                onPressed: () => setState(() => showBottomMenu = !showBottomMenu),
+              ),
+            ),
+
+            if (showBottomMenu)
+              Positioned(
+                bottom: 56,
+                right: 8,
+                child: Container(
+                  width: 200,
+                  padding: const EdgeInsets.all(8),
+                  color: Colors.white70,
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      // the key image
+                      SizedBox(
+                        height: 80,
+                        child: _buildKey(),
+                      ),
+
+                      const SizedBox(height: 8),
+
+                      // three layer‐select buttons
+                      Row(
+                      children: [
+                        Expanded(
+                          child: OutlinedButton(
+                            style: OutlinedButton.styleFrom(
+                              side: const BorderSide(color: Colors.black87),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(4),
+                              ),
+                              padding: const EdgeInsets.symmetric(vertical: 8),
+                            ),
+                            onPressed: () => setState(() {
+                              showFossils  = true;
+                              showGlaciers = showRocks = false;
+                            }),
+                            child: Image.asset(
+                              'assets/button_fossils.png',
+                              width: 32,
+                              height: 32,
+                              fit: BoxFit.contain,
+                              errorBuilder: (_, __, ___) => const Text('Fossils'),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 4),
+                        Expanded(
+                          child: OutlinedButton(
+                            style: OutlinedButton.styleFrom(
+                              side: const BorderSide(color: Colors.black87),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(4),
+                              ),
+                              padding: const EdgeInsets.symmetric(vertical: 8),
+                            ),
+                            onPressed: () => setState(() {
+                              showGlaciers = true;
+                              showFossils  = showRocks = false;
+                            }),
+                            child: Image.asset(
+                              'assets/button_glaciers.png',
+                              width: 32,
+                              height: 32,
+                              fit: BoxFit.contain,
+                              errorBuilder: (_, __, ___) => const Text('Glaciers'),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 4),
+                        Expanded(
+                          child: OutlinedButton(
+                            style: OutlinedButton.styleFrom(
+                              side: const BorderSide(color: Colors.black87),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(4),
+                              ),
+                              padding: const EdgeInsets.symmetric(vertical: 8),
+                            ),
+                            onPressed: () => setState(() {
+                              showRocks    = true;
+                              showFossils  = showGlaciers = false;
+                            }),
+                            child: Image.asset(
+                              'assets/button_rocks.png',
+                              width: 32,
+                              height: 32,
+                              fit: BoxFit.contain,
+                              errorBuilder: (_, __, ___) => const Text('Rocks'),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    ],
+                  ),
+                ),
+              ),
           ],
         );
       }),
     );
   }
+
+  /// Returns the correct key‐PNG for the active layer.
+  Widget _buildKey() {
+    String asset;
+    if (showGlaciers)  asset = 'assets/key_glaciers.png';
+    else if (showRocks) asset = 'assets/key_rocks.png';
+    else               asset = 'assets/key_fossils.png';
+
+    return Image.asset(
+      asset,
+      fit: BoxFit.contain,
+      errorBuilder: (_, __, ___) =>
+        const Center(child: Text('Key not found')),
+    );
+  }
 }
+
 
 class InteractiveContinent extends StatefulWidget {
   final String name;
   final List<String> overlays;
   final Offset initialPosition;
+  final int resetCounter;
   final bool showFossils, showGlaciers, showRocks, rotateMode;
   final void Function(String, Offset) onPositionChanged;
+  final double continentScale;
 
   const InteractiveContinent({
     Key? key,
@@ -438,7 +497,10 @@ class InteractiveContinent extends StatefulWidget {
     required this.showGlaciers,
     required this.showRocks,
     required this.rotateMode,
-    required this.onPositionChanged,
+    required this.onPositionChanged, 
+    required this.resetCounter, 
+    required this.continentScale, 
+    
   }) : super(key: key);
 
   @override
@@ -458,18 +520,18 @@ class _InteractiveContinentState extends State<InteractiveContinent> {
     @override
   void initState() {
     super.initState();
-    // start at the passed-in initialPosition
     position = widget.initialPosition;
     _loadImage();
   }
 
   @override
-  void didUpdateWidget(covariant InteractiveContinent oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    // if the parent’s initialPosition changed (e.g. via reset), update our position
-    if (oldWidget.initialPosition != widget.initialPosition) {
+  void didUpdateWidget(covariant InteractiveContinent old) {
+    super.didUpdateWidget(old);
+    // only reset on a true “reset” event, not on every drag
+    if (old.resetCounter != widget.resetCounter) {
       setState(() {
         position = widget.initialPosition;
+        rotation = 0.0;                     // reset rotation
       });
     }
   }
@@ -524,6 +586,12 @@ class _InteractiveContinentState extends State<InteractiveContinent> {
       child: PixelAwareContinent(
         image: _image!,
         pixelData: _pixels!,
+        child: MouseRegion(
+      // if rotateMode is on, show the “alias” (rotate) cursor;
+      // otherwise show the standard move cursor
+      cursor: widget.rotateMode
+        ? SystemMouseCursors.alias
+        : SystemMouseCursors.move,
         child: GestureDetector(
           behavior: HitTestBehavior.deferToChild,
           onScaleStart: (details) {
@@ -588,33 +656,38 @@ class _InteractiveContinentState extends State<InteractiveContinent> {
             _dragging = false;
             _rotating = false;
           },
+          child: Transform.scale(
+            scale: widget.continentScale,               // ← apply base scale here
+            alignment: Alignment.center,
           child: Transform.rotate(
             angle: rotation,
             alignment: Alignment.center,
-            child: Stack(
-              children: [
-                Image.asset('assets/${widget.name}.png'),
-                if (widget.showGlaciers && widget.overlays.contains('glaciers'))
-                  Image.asset('assets/${widget.name}_glaciers.png'),
-                if (widget.showFossils && widget.overlays.contains('fossils'))
-                  Image.asset('assets/${widget.name}_fossils.png'),
-                if (widget.showRocks && widget.overlays.contains('rocks'))
-                  Image.asset('assets/${widget.name}_rocks.png'),
-                Positioned(
-                  top: -18, left: 0,
-                  child: Container(
-                    color: Colors.black54,
-                    padding: const EdgeInsets.all(2),
-                    child: Text(
-                      'Off: (${position.dx.toStringAsFixed(1)}, ${position.dy.toStringAsFixed(1)})',
-                      style: const TextStyle(color: Colors.white, fontSize: 10),
+              child: Stack(
+                children: [
+                  Image.asset('assets/${widget.name}.png'),
+                  if (widget.showGlaciers && widget.overlays.contains('glaciers'))
+                    Image.asset('assets/${widget.name}_glaciers.png'),
+                  if (widget.showFossils && widget.overlays.contains('fossils'))
+                    Image.asset('assets/${widget.name}_fossils.png'),
+                  if (widget.showRocks && widget.overlays.contains('rocks'))
+                    Image.asset('assets/${widget.name}_rocks.png'),
+                  Positioned(
+                    top: -18, left: 0,
+                    child: Container(
+                      color: Colors.black54,
+                      padding: const EdgeInsets.all(2),
+                      child: Text(
+                        'Off: (${position.dx.toStringAsFixed(1)}, ${position.dy.toStringAsFixed(1)})',
+                        style: const TextStyle(color: Colors.white, fontSize: 10),
+                      ),
                     ),
                   ),
-                ),
-              ],
-            ),
+                ],
+              ),
+            )
           ),
         ),
+      ),
       ),
     );
   }
