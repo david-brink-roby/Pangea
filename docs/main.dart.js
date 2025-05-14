@@ -56380,7 +56380,8 @@ A.JZ().$1("'"+A.p(r.a)+"': Offset("+B.c.U(q.a,1)+", "+B.c.U(q.b,1)+"),")}},
 T(a){var s=null,r=A.a5M(!0,s,!0,!0,s,s,!1)
 r.jY()
 return new A.t_(r,new A.a1T(this),new A.Al(new A.a1U(this,a),s),s)},
-MT(){if(this.e)var s="assets/key_glaciers.png"
+MT(){if(this.r)var s="assets/key_continent.png"
+else if(this.e)s="assets/key_glaciers.png"
 else s=this.f?"assets/key_rocks.png":"assets/key_fossils.png"
 return A.mN(s,new A.a1s(),B.i2,null,null)},
 p_(a,b,c,d){var s=null,r=a?B.bR:B.v
