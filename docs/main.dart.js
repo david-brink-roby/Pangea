@@ -1166,7 +1166,7 @@ s.Mc()
 return s},
 aij(a){return new A.Ni($.a0,a)},
 a5J(){var s,r,q,p,o,n=A.ahZ(self.window.navigator)
-if(n==null||n.length===0)return B.jx
+if(n==null||n.length===0)return B.jy
 s=A.b([],t.as)
 for(r=n.length,q=0;q<n.length;n.length===r||(0,A.A)(n),++q){p=n[q]
 o=p.split("-")
@@ -6563,7 +6563,7 @@ if(r==null)r=3
 s=b==null?null:b.a
 r=A.H(r,s==null?3:s,c)
 r.toString
-return B.jC[A.aoW(B.c.ab(r),0,8)]},
+return B.jD[A.aoW(B.c.ab(r),0,8)]},
 a9D(a,b,c){var s=a==null,r=s?null:a.a,q=b==null
 if(r==(q?null:b.a))s=s&&q
 else s=!0
@@ -9829,7 +9829,7 @@ a9v(a,b,c){if(b!=null&&!b.i(0,B.O))return A.ahl(b.bs(A.aif(c)),a)
 return a},
 aif(a){var s,r,q,p,o,n
 if(a<0)return 0
-for(s=0;r=B.jy[s],q=r.a,a>=q;){if(a===q||s+1===6)return r.b;++s}p=B.jy[s-1]
+for(s=0;r=B.jz[s],q=r.a,a>=q;){if(a===q||s+1===6)return r.b;++s}p=B.jz[s-1]
 o=p.a
 n=p.b
 return n+(a-o)/(q-o)*(r.b-n)},
@@ -16147,7 +16147,7 @@ default:s=null}return s},
 yV:function yV(a,b){this.c=a
 this.a=b},
 ahP(a){var s
-switch(a.ah(t.I).w.a){case 0:s=B.D8
+switch(a.ah(t.I).w.a){case 0:s=B.Da
 break
 case 1:s=B.i
 break
@@ -27649,11 +27649,11 @@ gGQ(){var s=this.a
 if(s instanceof A.db)return s
 return this.a=new A.db(s)},
 gZN(){var s,r,q,p,o,n=this
-if(n.c===1)return B.jA
+if(n.c===1)return B.jB
 s=n.d
 r=J.bq(s)
 q=r.gu(s)-J.cs(n.e)-n.f
-if(q===0)return B.jA
+if(q===0)return B.jB
 p=[]
 for(o=0;o<q;++o)p.push(r.k(s,o))
 p.$flags=3
@@ -30875,7 +30875,7 @@ n=o.w=s.charCodeAt(0)==0?s:s}return n},
 gqW(){var s,r,q=this,p=q.x
 if(p===$){s=q.e
 if(s.length!==0&&s.charCodeAt(0)===47)s=B.d.fg(s,1)
-r=s.length===0?B.jz:A.Q6(new A.ad(A.b(s.split("/"),t.s),A.ap9(),t.nf),t.N)
+r=s.length===0?B.jA:A.Q6(new A.ad(A.b(s.split("/"),t.s),A.ap9(),t.nf),t.N)
 q.x!==$&&A.ac()
 p=q.x=r}return p},
 gq(a){var s,r=this,q=r.y
@@ -30986,7 +30986,7 @@ gix(){var s=this.r,r=this.a
 return s<r.length?B.d.fg(r,s+1):""},
 gqW(){var s,r,q=this.e,p=this.f,o=this.a
 if(B.d.dd(o,"/",q))++q
-if(q===p)return B.jz
+if(q===p)return B.jA
 s=A.b([],t.s)
 for(r=q;r<p;++r)if(o.charCodeAt(r)===47){s.push(B.d.ac(o,q,r))
 q=r+1}s.push(B.d.ac(o,q,p))
@@ -32164,7 +32164,7 @@ A.CU.prototype={
 iO(a){var s=a<0.198,r=s?0.198:0.802,q=s?0.541:0.45899999999999996,p=(a-(s?0:0.198))/r
 if(s)return new A.dr(0.056/r,0.024/q,0.108/r,0.3085/q).ak(p)*q
 else return new A.dr(0.16749999999999998/r,0.45899999999999996/q,0.3485/r,0.44799999999999995/q).ak(p)*q+0.541},
-j(a){return"ThreePointCubic("+B.D4.j(0)+", "+B.Df.j(0)+", "+B.D1.j(0)+", "+B.Da.j(0)+", "+B.De.j(0)+") "}}
+j(a){return"ThreePointCubic("+B.D6.j(0)+", "+B.Df.j(0)+", "+B.D2.j(0)+", "+B.Db.j(0)+", "+B.De.j(0)+") "}}
 A.mC.prototype={
 iO(a){return 1-this.a.ak(1-a)},
 j(a){return"FlippedCurve("+this.a.j(0)+")"}}
@@ -34757,7 +34757,7 @@ N1(a){var s,r=this,q=null,p=r.a,o=p.e
 p=p.cx
 s=r.gR4()
 r.a.toString
-return new A.uH(q,q,q,new A.a0W(),q,q,q,q,q,o,B.Co,q,q,q,B.Ay,r.gRb(),p,q,B.Ic,B.bQ,q,s,q,q,B.jx,!1,!1,q,q,q,new A.kD(r,t.By))},
+return new A.uH(q,q,q,new A.a0W(),q,q,q,q,q,o,B.Co,q,q,q,B.Ay,r.gRb(),p,q,B.Ic,B.bQ,q,s,q,q,B.jy,!1,!1,q,q,q,new A.kD(r,t.By))},
 T(a){var s,r=null,q=A.qv(!1,!1,this.N1(a),r,r,r,r,!0,r,r,r,new A.a0X(),r,r)
 this.a.toString
 s=this.d
@@ -40293,7 +40293,7 @@ A.Ic.prototype={
 gey(){var s,r=this.d
 if(r===0)return B.i
 s=this.a
-if(!isFinite(s.c.gbC()))return B.D6
+if(!isFinite(s.c.gbC()))return B.D9
 return new A.t(r*(this.c-s.c.gbC()),0)},
 SR(a,b,c){var s,r,q=this,p=q.c
 if(b===p&&a===p){q.c=q.a.tF(a,b,c)
@@ -40664,7 +40664,7 @@ p=h.gj3()
 o=h.r
 o=o==null?g:o*a2+a1
 n=h.w
-n=n==null?g:B.jC[B.h.dk(n.a,0,8)]
+n=n==null?g:B.jD[B.h.dk(n.a,0,8)]
 m=h.y
 m=m==null?g:m+0
 l=h.z
@@ -41182,8 +41182,8 @@ s=r.V
 r.d0=s==null?null:s.gIO()
 a.a=!1},
 pM(a,b,c){var s,r,q,p,o=this
-o.en=A.aaP(o.en,B.jB)
-o.eZ=A.aaP(o.eZ,B.jB)
+o.en=A.aaP(o.en,B.jC)
+o.eZ=A.aaP(o.eZ,B.jC)
 s=o.en
 r=s!=null&&!s.gL(s)
 s=o.eZ
@@ -56374,17 +56374,17 @@ else if(this.e)s="assets/key_glaciers.png"
 else s=this.f?"assets/key_rocks.png":"assets/key_fossils.png"
 return A.kI(s,new A.a1r(),B.eN,null,null)}}
 A.a1Z.prototype={
-$2(a,b){return new A.aT(a,new A.t(b.a/2400,b.b/1000),t.d3)},
+$2(a,b){return new A.aT(a,new A.t(b.a/4320,b.b/2200),t.d3)},
 $S:373}
 A.a1w.prototype={
 $0(){var s=this.a
 s.gGU().Y(0,new A.a1v(s));++s.y},
 $S:0}
 A.a1v.prototype={
-$2(a,b){this.a.at.m(0,a,new A.t(b.a*2400,b.b*1000))},
+$2(a,b){this.a.at.m(0,a,new A.t(b.a*4320,b.b*2200))},
 $S:51}
 A.a1X.prototype={
-$2(a,b){this.a.at.m(0,a,new A.t(b.a*2400,b.b*1000))},
+$2(a,b){this.a.at.m(0,a,new A.t(b.a*4320,b.b*2200))},
 $S:51}
 A.a1Y.prototype={
 $1(a){var s=this.a,r=s.c
@@ -56414,11 +56414,11 @@ $0(){var s=$.xx().d,r=A.m(s).h("b9<2>")
 this.a.w=A.dw(new A.b9(s,r),r.h("o.E")).p(0,B.jJ)},
 $S:0}
 A.a1U.prototype={
-$2(a0,a1){var s,r,q,p,o,n,m,l,k,j,i,h,g,f,e,d=null,c=a1.b,b=c/2400,a=A.b([B.b.FW(B.jD,new A.a1G())],t.iy)
-B.b.I(a,new A.av(B.jD,new A.a1H(),t.ut))
+$2(a0,a1){var s,r,q,p,o,n,m,l,k,j,i,h,g,f,e,d=null,c=a1.b,b=c/4320,a=A.b([B.b.FW(B.jx,new A.a1G())],t.iy)
+B.b.I(a,new A.av(B.jx,new A.a1H(),t.ut))
 s=this.a
 r=t.d
-q=A.b([A.a6n(0,A.kI("assets/background.png",new A.a1I(),B.v8,d,d)),A.a8T(d,d,d,B.yw,new A.J(2400,1000))],r)
+q=A.b([A.a6n(0,A.kI("assets/background.png",new A.a1I(),B.v8,d,d)),A.a8T(d,d,d,B.yw,new A.J(4320,2200))],r)
 for(p=a.length,o=s.gRH(),n=t.fs,m=s.at,l=0;l<a.length;a.length===p||(0,A.A)(a),++l){k=a[l]
 j=k.a
 i=m.k(0,j)
@@ -56428,11 +56428,11 @@ g=s.d&&!s.r
 f=s.e&&!s.r
 e=s.f&&!s.r
 q.push(new A.qQ(j,k.b,i,h,g,f,e,s.w,o,0.8,new A.jz(j,n)))}q.push(A.lh(d,new A.zk(s.gOh(),d,d,d,d,d,d,!1,d,!0,d,B.Kl,d),d,d,8,d,8,d))
-a=A.a6n(0,A.zL(B.bO,A.LO(new A.zx(B.v9,B.uU,A.a6G(A.u1(B.cc,q,B.eq),1000,2400),d),d,d,1000*b,d,d,c),B.aU,!1,d,d,d,d,d,d,d,d,d,d,d,d,d,d,d,d,d,new A.a1L(s,a0,b),d))
+a=A.a6n(0,A.zL(B.bO,A.LO(new A.zx(B.v9,B.uU,A.a6G(A.u1(B.cc,q,B.eq),2200,4320),d),d,d,2200*b,d,d,c),B.aU,!1,d,d,d,d,d,d,d,d,d,d,d,d,d,d,d,d,d,new A.a1L(s,a0,b),d))
 q=A.a9K(d,d,B.yD,d,new A.a1M(s,this.b),d,d)
 p=s.w
 o=p?B.yA:B.yz
-a=A.b([a,A.lh(d,A.aaW(A.b([q,A.a9K(d,d,A.aiT(o,p?B.bQ:B.x,d),d,new A.a1N(s),d,"Toggle Rotate Mode (R)")],r),B.dX),d,d,d,8,8,d),A.lh(8,A.aaW(A.b([s.p_(s.d,"assets/button_fossils.png","Fossils",new A.a1O(s)),B.hz,s.p_(s.e,"assets/button_glaciers.png","Glaciers",new A.a1P(s)),B.hz,s.p_(s.f,"assets/button_rocks.png","Rocks",new A.a1Q(s)),B.hz,s.p_(s.r,"assets/button_continents.png","Continents",new A.a1R(s))],r),B.dX),d,d,d,8,d,d),A.lh(8,A.zL(d,A.kI("assets/acknowledgement.png",new A.a1S(),B.eN,100,200),B.aU,!1,d,d,d,d,d,d,d,d,d,d,d,d,d,d,d,new A.a1J(),d,d,d),d,d,8,d,d,d)],r)
+a=A.b([a,A.lh(d,A.aaW(A.b([q,A.a9K(d,d,A.aiT(o,p?B.bQ:B.x,d),d,new A.a1N(s),d,"Toggle Rotate Mode (R)")],r),B.dX),d,d,d,8,8,d),A.lh(8,A.aaW(A.b([s.p_(s.d,"assets/button_fossils.png","Fossils",new A.a1O(s)),B.hz,s.p_(s.e,"assets/button_glaciers.png","Glaciers",new A.a1P(s)),B.hz,s.p_(s.f,"assets/button_rocks.png","Rocks",new A.a1Q(s)),B.hz,s.p_(s.r,"assets/button_continents.png","Continents",new A.a1R(s))],r),B.dX),d,d,d,8,d,d),A.lh(8,A.zL(d,A.kI("assets/acknowledgement.png",new A.a1S(),B.eN,150,300),B.aU,!1,d,d,d,d,d,d,d,d,d,d,d,d,d,d,d,new A.a1J(),d,d,d),d,d,8,d,d,d)],r)
 if(s.d||s.e||s.f||s.r)a.push(A.lh(56,A.LO(s.MT(),B.y,d,200,d,B.fm,200),d,d,d,8,d,d))
 return A.u1(B.cc,a,B.eq)},
 $S:375}
@@ -56622,7 +56622,7 @@ g=new A.ad(j,new A.a0z(),k).jU(0,B.i9)
 f=new A.ad(j,new A.a0A(),k).jU(0,B.ia)
 e=(h-i)/2
 d=(f-g)/2
-b.ao(new A.a0B(b,B.c.dk(s.a+(r.a-q.a),0-i-e,2400-h+e),B.c.dk(s.b+(r.b-q.b),0-g-d,1000-f+d)))}else if(b.y){if(a.w>1)c=a.r
+b.ao(new A.a0B(b,B.c.dk(s.a+(r.a-q.a),0-i-e,4320-h+e),B.c.dk(s.b+(r.b-q.b),0-g-d,2200-f+d)))}else if(b.y){if(a.w>1)c=a.r
 else{s=b.z
 s===$&&A.c()
 c=(a.b.a-s.a)*0.01}b.ao(new A.a0C(b,c))}},
@@ -58928,10 +58928,10 @@ B.w9=new A.XX()
 B.wa=new A.XZ()
 B.wb=new A.Y_()
 B.wc=new A.Y0()
-B.D4=new A.t(0.056,0.024)
+B.D6=new A.t(0.056,0.024)
 B.Df=new A.t(0.108,0.3085)
-B.D1=new A.t(0.198,0.541)
-B.Da=new A.t(0.3655,1)
+B.D2=new A.t(0.198,0.541)
+B.Db=new A.t(0.3655,1)
 B.De=new A.t(0.5465,0.989)
 B.dj=new A.CU()
 B.wd=new A.CV()
@@ -59310,15 +59310,28 @@ B.aw=new A.i4(4,"start")
 B.hC=new A.i4(5,"end")
 B.zX=A.b(s([B.d0,B.hA,B.hB,B.er,B.aw,B.hC]),A.ah("v<i4>"))
 B.zZ=A.b(s([B.eI,B.eJ]),A.ah("v<pa>"))
+B.cy=A.b(s(["glaciers","fossils"]),t.s)
+B.xv=new A.dq("madagascar",B.cy)
+B.fH=A.b(s(["rocks","fossils"]),t.s)
+B.xs=new A.dq("greenland",B.fH)
+B.xt=new A.dq("south_america",B.cy)
+B.xw=new A.dq("north_america",B.fH)
+B.AA=A.b(s(["glaciers","fossils","rocks"]),t.s)
+B.xo=new A.dq("africa",B.AA)
+B.xr=new A.dq("eurasia",B.fH)
+B.xu=new A.dq("india",B.cy)
+B.xq=new A.dq("australia",B.cy)
+B.xp=new A.dq("antartica",B.cy)
+B.jx=A.b(s([B.xv,B.xs,B.xt,B.xw,B.xo,B.xr,B.xu,B.xq,B.xp]),t.iy)
 B.AN=new A.j6("en","US")
-B.jx=A.b(s([B.AN]),t.as)
+B.jy=A.b(s([B.AN]),t.as)
 B.Lw=new A.ie(0,0)
 B.LB=new A.ie(1,0.05)
 B.Lz=new A.ie(3,0.08)
 B.LA=new A.ie(6,0.11)
 B.Ly=new A.ie(8,0.12)
 B.Lx=new A.ie(12,0.14)
-B.jy=A.b(s([B.Lw,B.LB,B.Lz,B.LA,B.Ly,B.Lx]),A.ah("v<ie>"))
+B.jz=A.b(s([B.Lw,B.LB,B.Lz,B.LA,B.Ly,B.Lx]),A.ah("v<ie>"))
 B.A6=A.b(s([-1,0,0,1,0,0,-1,0,1,0,0,0,-1,1,0,1,1,1,1,0]),t.n)
 B.Gx=new A.u5(0,"left")
 B.Gy=new A.u5(1,"right")
@@ -59353,7 +59366,7 @@ B.tw=new A.Cd(1,"page")
 B.he=new A.dU(B.eL,B.tw)
 B.Al=A.b(s([B.ve,B.he]),A.ah("v<an>"))
 B.As=A.b(s([]),t.EQ)
-B.jB=A.b(s([]),A.ah("v<aqK>"))
+B.jC=A.b(s([]),A.ah("v<aqK>"))
 B.Aw=A.b(s([]),t.p)
 B.Ax=A.b(s([]),t.nJ)
 B.Av=A.b(s([]),t.gw)
@@ -59364,12 +59377,12 @@ B.Ao=A.b(s([]),A.ah("v<aat<@>>"))
 B.fG=A.b(s([]),t.f8)
 B.Ar=A.b(s([]),t.xx)
 B.fF=A.b(s([]),t.Y)
-B.jz=A.b(s([]),t.s)
+B.jA=A.b(s([]),t.s)
 B.a7=A.b(s([]),t.ve)
 B.Au=A.b(s([]),t.px)
 B.Mq=A.b(s([]),t.d)
 B.An=A.b(s([]),t.t)
-B.jA=A.b(s([]),t.zz)
+B.jB=A.b(s([]),t.zz)
 B.At=A.b(s([]),t.yH)
 B.yo=new A.er(0)
 B.yp=new A.er(1)
@@ -59380,21 +59393,8 @@ B.yr=new A.er(5)
 B.jh=new A.er(6)
 B.ys=new A.er(7)
 B.ji=new A.er(8)
-B.jC=A.b(s([B.yo,B.yp,B.yq,B.z,B.Z,B.yr,B.jh,B.ys,B.ji]),A.ah("v<er>"))
+B.jD=A.b(s([B.yo,B.yp,B.yq,B.z,B.Z,B.yr,B.jh,B.ys,B.ji]),A.ah("v<er>"))
 B.cz=A.b(s([B.b3,B.aS,B.d8,B.d9,B.eH]),t.EQ)
-B.cy=A.b(s(["glaciers","fossils"]),t.s)
-B.xv=new A.dq("madagascar",B.cy)
-B.fH=A.b(s(["rocks","fossils"]),t.s)
-B.xs=new A.dq("greenland",B.fH)
-B.xw=new A.dq("north_america",B.fH)
-B.xt=new A.dq("south_america",B.cy)
-B.AA=A.b(s(["glaciers","fossils","rocks"]),t.s)
-B.xo=new A.dq("africa",B.AA)
-B.xr=new A.dq("eurasia",B.fH)
-B.xu=new A.dq("india",B.cy)
-B.xq=new A.dq("australia",B.cy)
-B.xp=new A.dq("antartica",B.cy)
-B.jD=A.b(s([B.xv,B.xs,B.xw,B.xt,B.xo,B.xr,B.xu,B.xq,B.xp]),t.iy)
 B.bR=new A.e4(0,"controlModifier")
 B.bS=new A.e4(1,"shiftModifier")
 B.bT=new A.e4(2,"altModifier")
@@ -59915,16 +59915,16 @@ B.Gf=new A.U(B.X,!1,!0,!0,!1,B.k)
 B.G3=new A.U(B.X,!1,!1,!0,!1,B.k)
 B.oC=new A.ce([B.Ga,B.l,B.FG,B.l,B.FF,B.l,B.Fu,B.l,B.G_,B.l,B.FR,B.l,B.Gf,B.l,B.G3,B.l],t.xK)
 B.CZ={greenland:0,north_america:1,south_america:2,africa:3,eurasia:4,india:5,madagascar:6,australia:7,antartica:8}
-B.D7=new A.t(504.5,1.4)
-B.Db=new A.t(240.9,-20.3)
-B.D5=new A.t(402.2,166.7)
-B.Dd=new A.t(584.8,95.7)
-B.Dc=new A.t(582.8,-24)
-B.D2=new A.t(815.1,131.2)
-B.D0=new A.t(751.1,268.6)
-B.Dg=new A.t(912.7,279.9)
-B.D9=new A.t(547,343.4)
-B.Cl=new A.bl(B.CZ,[B.D7,B.Db,B.D5,B.Dd,B.Dc,B.D2,B.D0,B.Dg,B.D9],A.ah("bl<w,t>"))
+B.Dc=new A.t(1831.8,99.4)
+B.Dg=new A.t(847.6,115.7)
+B.D8=new A.t(1436.2,822.7)
+B.D7=new A.t(2232.8,564.3)
+B.D0=new A.t(2321.5,98.6)
+B.D4=new A.t(3085.7,632.5)
+B.D3=new A.t(2835.8,1130.6)
+B.D1=new A.t(3521.4,1027.9)
+B.Dd=new A.t(574.4,1110.7)
+B.Cl=new A.bl(B.CZ,[B.Dc,B.Dg,B.D8,B.D7,B.D0,B.D4,B.D3,B.D1,B.Dd],A.ah("bl<w,t>"))
 B.CY={type:0}
 B.Cm=new A.bl(B.CY,["line"],t.hD)
 B.aV={}
@@ -60313,9 +60313,9 @@ B.CN=new A.ry(null,null,null,null,null,null,null,null,null,null,null,null,null)
 B.i=new A.t(0,0)
 B.oP=new A.fg(B.i,B.i)
 B.D_=new A.t(1,0)
-B.D3=new A.t(-0.3333333333333333,0)
-B.D6=new A.t(1/0,0)
-B.D8=new A.t(17976931348623157e292,0)
+B.D5=new A.t(-0.3333333333333333,0)
+B.D9=new A.t(1/0,0)
+B.Da=new A.t(17976931348623157e292,0)
 B.oQ=new A.t(0,-0.005)
 B.ad=new A.hO(0,"iOs")
 B.e1=new A.hO(1,"android")
@@ -61300,7 +61300,7 @@ r($,"auv","aF",()=>$.ae2())
 r($,"au5","a53",()=>B.vD)
 r($,"aqD","ae0",()=>new A.xM(B.u,B.u))
 s($,"au_","afX",()=>A.ed(B.D_,B.i,t.o))
-s($,"atT","a89",()=>A.ed(B.i,B.D3,t.o))
+s($,"atT","a89",()=>A.ed(B.i,B.D5,t.o))
 r($,"asW","afc",()=>new A.yP(B.Lp,B.Lo))
 s($,"ats","afz",()=>A.aop($.aF().gbR()))
 s($,"aqH","aL",()=>A.b6(0,null,!1,t.xR))
