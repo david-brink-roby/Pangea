@@ -3,10 +3,10 @@ const MANIFEST = 'flutter-app-manifest';
 const TEMP = 'flutter-temp-cache';
 const CACHE_NAME = 'flutter-app-cache';
 
-const RESOURCES = {"assets/AssetManifest.bin": "ab8a34ae59bdb9ddbff76ae86970b548",
-"assets/AssetManifest.bin.json": "3523a0c91ad4aeb1b3c3a1aae4e977b1",
-"assets/AssetManifest.json": "8b7587a570bde1f87d3f52503a379371",
-"assets/assets/acknowledgement.png": "ca2eba0f881393682ed5af9671fd8b4e",
+const RESOURCES = {"assets/AssetManifest.bin": "de0e5c87a3bb2ece73687acae1cb10ea",
+"assets/AssetManifest.bin.json": "45279d4fa4c61941e92aebffb2df92d7",
+"assets/AssetManifest.json": "a5f88993b25ab605db0c480ae3ee57f4",
+"assets/assets/acknowledgements.png": "ca2eba0f881393682ed5af9671fd8b4e",
 "assets/assets/africa.png": "526a605970e0b1aa43ae0edd762e330d",
 "assets/assets/africa_fossils.png": "f3a8a12aecfdf945e50e92b0eacb73b2",
 "assets/assets/africa_glaciers.png": "d6cb31b76fba8b6031f0b08794774669",
@@ -31,7 +31,7 @@ const RESOURCES = {"assets/AssetManifest.bin": "ab8a34ae59bdb9ddbff76ae86970b548
 "assets/assets/india.png": "9d37f7dde506986b38b5dc9f3d205c9d",
 "assets/assets/india_fossils.png": "c8d0dc65d5ba599a2f6c8667d3b420e0",
 "assets/assets/india_glaciers.png": "cfd8e140f3ad0db72082da9d73baa4e1",
-"assets/assets/key_continent.png": "a21b1e9153db96bfc375c7fb32b0e7fe",
+"assets/assets/key_continents.png": "a21b1e9153db96bfc375c7fb32b0e7fe",
 "assets/assets/key_fossils.png": "aede252891a0e7d7780278f34abdaf3d",
 "assets/assets/key_glaciers.png": "fbfeb5962acf332c1805466a4f6468d6",
 "assets/assets/key_rocks.png": "7c6f598f92b691e28772796598375e8a",
@@ -63,14 +63,14 @@ const RESOURCES = {"assets/AssetManifest.bin": "ab8a34ae59bdb9ddbff76ae86970b548
 "canvaskit/skwasm_st.wasm": "56c3973560dfcbf28ce47cebe40f3206",
 "favicon.png": "5dcef449791fa27946b3d35ad8803796",
 "flutter.js": "76f08d47ff9f5715220992f993002504",
-"flutter_bootstrap.js": "c83a9d16a7b4d88ddbe11e7fb3c1d95e",
+"flutter_bootstrap.js": "c0569a6cc0508cd44468e5f3067bba4a",
 "icons/Icon-192.png": "ac9a721a12bbc803b44f645561ecb1e1",
 "icons/Icon-512.png": "96e752610906ba2a93c65f8abe1645f1",
 "icons/Icon-maskable-192.png": "c457ef57daa1d16f64b27b786ec2ea3c",
 "icons/Icon-maskable-512.png": "301a7604d45b3e739efc881eb04896ea",
 "index.html": "26a061fbe9eaf344cb785f722646c00d",
 "/": "26a061fbe9eaf344cb785f722646c00d",
-"main.dart.js": "2705134ef9cfa81ac4ebbb4adaa3b2c5",
+"main.dart.js": "5cd29d97b5977ccc0c10fe648ce81930",
 "manifest.json": "86b6c8ee9e53441604080fc344a53eb7",
 "version.json": "88c37cb86d6ac92816be1bb8c1272fac"};
 // The application shell files that are downloaded before a service worker can
