@@ -56374,17 +56374,17 @@ else if(this.e)s="assets/key_glaciers.png"
 else s=this.f?"assets/key_rocks.png":"assets/key_fossils.png"
 return A.kI(s,new A.a1r(),B.eN,null,null)}}
 A.a1Z.prototype={
-$2(a,b){return new A.aT(a,new A.t(b.a/1200,b.b/500),t.d3)},
+$2(a,b){return new A.aT(a,new A.t(b.a/2400,b.b/1000),t.d3)},
 $S:373}
 A.a1w.prototype={
 $0(){var s=this.a
 s.gGU().Y(0,new A.a1v(s));++s.y},
 $S:0}
 A.a1v.prototype={
-$2(a,b){this.a.at.m(0,a,new A.t(b.a*1200,b.b*500))},
+$2(a,b){this.a.at.m(0,a,new A.t(b.a*2400,b.b*1000))},
 $S:51}
 A.a1X.prototype={
-$2(a,b){this.a.at.m(0,a,new A.t(b.a*1200,b.b*500))},
+$2(a,b){this.a.at.m(0,a,new A.t(b.a*2400,b.b*1000))},
 $S:51}
 A.a1Y.prototype={
 $1(a){var s=this.a,r=s.c
@@ -56414,11 +56414,11 @@ $0(){var s=$.xx().d,r=A.m(s).h("b9<2>")
 this.a.w=A.dw(new A.b9(s,r),r.h("o.E")).p(0,B.jJ)},
 $S:0}
 A.a1U.prototype={
-$2(a0,a1){var s,r,q,p,o,n,m,l,k,j,i,h,g,f,e,d=null,c=a1.b,b=c/1200,a=A.b([B.b.FW(B.jD,new A.a1G())],t.iy)
+$2(a0,a1){var s,r,q,p,o,n,m,l,k,j,i,h,g,f,e,d=null,c=a1.b,b=c/2400,a=A.b([B.b.FW(B.jD,new A.a1G())],t.iy)
 B.b.I(a,new A.av(B.jD,new A.a1H(),t.ut))
 s=this.a
 r=t.d
-q=A.b([A.a6n(0,A.kI("assets/background.png",new A.a1I(),B.v8,d,d)),A.a8T(d,d,d,B.yw,new A.J(1200,500))],r)
+q=A.b([A.a6n(0,A.kI("assets/background.png",new A.a1I(),B.v8,d,d)),A.a8T(d,d,d,B.yw,new A.J(2400,1000))],r)
 for(p=a.length,o=s.gRH(),n=t.fs,m=s.at,l=0;l<a.length;a.length===p||(0,A.A)(a),++l){k=a[l]
 j=k.a
 i=m.k(0,j)
@@ -56428,7 +56428,7 @@ g=s.d&&!s.r
 f=s.e&&!s.r
 e=s.f&&!s.r
 q.push(new A.qQ(j,k.b,i,h,g,f,e,s.w,o,0.8,new A.jz(j,n)))}q.push(A.lh(d,new A.zk(s.gOh(),d,d,d,d,d,d,!1,d,!0,d,B.Kl,d),d,d,8,d,8,d))
-a=A.a6n(0,A.zL(B.bO,A.LO(new A.zx(B.v9,B.uU,A.a6G(A.u1(B.cc,q,B.eq),500,1200),d),d,d,500*b,d,d,c),B.aU,!1,d,d,d,d,d,d,d,d,d,d,d,d,d,d,d,d,d,new A.a1L(s,a0,b),d))
+a=A.a6n(0,A.zL(B.bO,A.LO(new A.zx(B.v9,B.uU,A.a6G(A.u1(B.cc,q,B.eq),1000,2400),d),d,d,1000*b,d,d,c),B.aU,!1,d,d,d,d,d,d,d,d,d,d,d,d,d,d,d,d,d,new A.a1L(s,a0,b),d))
 q=A.a9K(d,d,B.yD,d,new A.a1M(s,this.b),d,d)
 p=s.w
 o=p?B.yA:B.yz
@@ -56622,7 +56622,7 @@ g=new A.ad(j,new A.a0z(),k).jU(0,B.i9)
 f=new A.ad(j,new A.a0A(),k).jU(0,B.ia)
 e=(h-i)/2
 d=(f-g)/2
-b.ao(new A.a0B(b,B.c.dk(s.a+(r.a-q.a),0-i-e,1200-h+e),B.c.dk(s.b+(r.b-q.b),0-g-d,500-f+d)))}else if(b.y){if(a.w>1)c=a.r
+b.ao(new A.a0B(b,B.c.dk(s.a+(r.a-q.a),0-i-e,2400-h+e),B.c.dk(s.b+(r.b-q.b),0-g-d,1000-f+d)))}else if(b.y){if(a.w>1)c=a.r
 else{s=b.z
 s===$&&A.c()
 c=(a.b.a-s.a)*0.01}b.ao(new A.a0C(b,c))}},
