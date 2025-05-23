@@ -9,11 +9,11 @@ import 'package:flutter/rendering.dart';
 const int kPrimaryMouseButton = 1;
 
 /// “Design” canvas size your map was authored at.
-const double designWidth = 1200;
-const double designHeight = 500;
+const double designWidth = 4320;
+const double designHeight = 2200;
 
- /// How big each continent should be, *before* we fit the whole canvas to the screen.
-  double continentBaseScale = .8; // try 0.8, 1.2, etc.
+/// How big each continent should be, *before* we fit the whole canvas to the screen.
+double continentBaseScale = .8;
 
 void main() => runApp(const PangeaApp());
 
@@ -38,10 +38,11 @@ class Continent {
   const Continent(this.name, this.overlays);
 }
 
-/// Only hit on opaque pixels.
+/// Only hit on opaque pixels, remapped for scaled rendering.
 class PixelAwareHitTestBox extends RenderProxyBox {
   final ui.Image image;
   final ByteData pixelData;
+
   PixelAwareHitTestBox({
     required this.image,
     required this.pixelData,
@@ -50,10 +51,15 @@ class PixelAwareHitTestBox extends RenderProxyBox {
 
   @override
   bool hitTestSelf(Offset pos) {
-    final x = pos.dx.clamp(0.0, image.width - 1).toInt();
-    final y = pos.dy.clamp(0.0, image.height - 1).toInt();
-    final idx = (y * image.width + x) * 4;
-    return pixelData.getUint8(idx + 3) > 16;
+    final RenderBox childBox = child as RenderBox;
+    final Size paintedSize = childBox.size;
+    final double sx = image.width / paintedSize.width;
+    final double sy = image.height / paintedSize.height;
+    final int x = (pos.dx * sx).clamp(0.0, image.width - 1).toInt();
+    final int y = (pos.dy * sy).clamp(0.0, image.height - 1).toInt();
+    final int idx = (y * image.width + x) * 4;
+    final int alpha = pixelData.getUint8(idx + 3);
+    return alpha > 16;
   }
 
   @override
@@ -108,45 +114,45 @@ class PangeaMap extends StatefulWidget {
   @override
   _PangeaMapState createState() => _PangeaMapState();
 }
+
 class _PangeaMapState extends State<PangeaMap> {
-  bool showFossils     = true;
+  bool showFossils     = false;
   bool showGlaciers    = false;
   bool showRocks       = false;
+  bool showContinents  = true;
   bool rotateMode      = false;
   bool showBottomMenu  = false;
   int  resetCounter    = 0;
   Offset? tapped;
+  String? legendLayer;
 
-  // Absolute positions provided by user
   static const Map<String, Offset> absoluteStart = {
-    'greenland':     Offset(411.8, -48.0),
-    'north_america': Offset(64.9, -84.3),
-    'south_america': Offset(173.6, 138.1),
-    'africa':        Offset(382.8, 38.4),
-    'eurasia':       Offset(366.8, -230.5),
-    'india':         Offset(647.8, 85.9),
-    'arabia':        Offset(591.2, 91.8),
-    'madagascar':    Offset(624.4, 238.6),
-    'australia':     Offset(784.7, 205.9),
-    'antartica':     Offset(451.6, 291.4),
+    'greenland': Offset(1531.8, 99.4),
+    'north_america': Offset(547.6, 115.7),
+    'south_america': Offset(1136.2, 822.7),
+    'africa': Offset(1932.8, 564.3),
+    'eurasia': Offset(2021.5, 98.6),
+    'india': Offset(2785.7, 632.5),
+    'madagascar': Offset(2535.8, 1130.6),
+    'australia': Offset(3221.4, 1027.9),
+    'antartica': Offset(274.4, 1110.7),
   };
 
-  // Convert to normalized coords [0..1]
   late final Map<String, Offset> normalizedStart = absoluteStart.map(
     (key, abs) => MapEntry(
       key,
       Offset(abs.dx / designWidth, abs.dy / designHeight),
     ),
   );
+
   final List<Continent> continents = const [
     Continent('madagascar', ['glaciers', 'fossils']),
-    Continent('greenland', []),
-    Continent('north_america', ['rocks']),
-    Continent('south_america', ['glaciers', 'fossils', 'rocks']),
+    Continent('greenland', ['rocks', 'fossils']),
+    Continent('south_america', ['glaciers', 'fossils']),
+    Continent('north_america', ['rocks', 'fossils']),
     Continent('africa', ['glaciers', 'fossils', 'rocks']),
-    Continent('eurasia', ['rocks']),
+    Continent('eurasia', ['rocks', 'fossils']),
     Continent('india', ['glaciers', 'fossils']),
-    Continent('arabia', []),
     Continent('australia', ['glaciers', 'fossils']),
     Continent('antartica', ['glaciers', 'fossils']),
   ];
@@ -198,22 +204,17 @@ class _PangeaMapState extends State<PangeaMap> {
   }
 
   void _onPositionChanged(String name, Offset pos) {
-    setState(() {
-      currentPos[name] = pos;
-    });
+    setState(() { currentPos[name] = pos; });
   }
 
   void _dumpCoords() {
     debugPrint('// dump at ${DateTime.now()}');
-    for (var entry in currentPos.entries) {
-      final p = entry.value;
-      debugPrint(
-        "'${entry.key}': Offset(${p.dx.toStringAsFixed(1)}, ${p.dy.toStringAsFixed(1)}),"
-      );
-    }
+    currentPos.forEach((key, p) {
+      debugPrint("'$key': Offset(${p.dx.toStringAsFixed(1)}, ${p.dy.toStringAsFixed(1)}),");
+    });
   }
 
-  @override
+ @override
   Widget build(BuildContext context) {
     return RawKeyboardListener(
       focusNode: FocusNode()..requestFocus(),
@@ -224,256 +225,223 @@ class _PangeaMapState extends State<PangeaMap> {
         final availW = constraints.maxWidth;
         final scale  = availW / designWidth;
 
-        // ensure Madagascar is drawn first (in back):
         final ordered = [
           continents.firstWhere((c) => c.name == 'madagascar'),
           ...continents.where((c) => c.name != 'madagascar'),
         ];
 
-        return Stack(
-          children: [
-            // ─── the map canvas ──────────────────────
-            Positioned.fill(
-              child: GestureDetector(
-                behavior: HitTestBehavior.translucent,
-                onTapDown: (details) {
-                  final r     = ctx.findRenderObject() as RenderBox;
-                  final local = r.globalToLocal(details.globalPosition);
-                  setState(() => tapped = local / scale);
-                },
-                child: Container(
-                  width: availW,
-                  height: designHeight * scale,
-                  color: Colors.transparent,
-                  child: FittedBox(
-                    fit: BoxFit.fitWidth,
-                    alignment: Alignment.topLeft,
-                    child: SizedBox(
-                      width: designWidth,
-                      height: designHeight,
-                      child: Stack(
-                        children: [
-                          // background + grid
-                          Positioned.fill(
-                            child: Image.asset(
-                              'assets/background.png',
-                              fit: BoxFit.cover,
-                              errorBuilder: (_,__,___)=>
-                                Container(color: Colors.grey[300]),
-                            ),
-                          ),
-                          CustomPaint(
-                            size: Size(designWidth, designHeight),
-                            painter: const GridPainter(
-                              gridSize: 50,
-                              lineColor: Color.fromRGBO(128,128,128,0.5),
-                            ),
-                          ),
-
-                          // continents, Madagascar first
-                          for (final c in ordered)
-                            InteractiveContinent(
-                              key: ValueKey(c.name),
-                              name: c.name,
-                              overlays: c.overlays,
-                              initialPosition: currentPos[c.name]!,
-                              resetCounter: resetCounter,
-                              showFossils:  showFossils,
-                              showGlaciers: showGlaciers,
-                              showRocks:    showRocks,
-                              rotateMode:   rotateMode,
-                              onPositionChanged: _onPositionChanged,
-                              continentScale: continentBaseScale,
-                            ),
-
-                          // Dump‐coords button (for dev)
-                          Positioned(
-                            left: 8, top: 8,
-                            child: ElevatedButton(
-                              onPressed: _dumpCoords,
-                              child: const Text('Dump coords'),
-                            ),
-                          ),
-                        ],
+        return Stack(children: [
+          // ─── Main canvas ───────────────────────────
+          Positioned.fill(
+            child: GestureDetector(
+              behavior: HitTestBehavior.translucent,
+              onTapDown: (details) {
+                final box   = ctx.findRenderObject() as RenderBox;
+                final local = box.globalToLocal(details.globalPosition);
+                setState(() => tapped = local / scale);
+              },
+              child: Container(
+                width:  availW,
+                height: designHeight * scale,
+                child: FittedBox(
+                  fit: BoxFit.fitWidth,
+                  alignment: Alignment.topLeft,
+                  child: SizedBox(
+                    width:  designWidth,
+                    height: designHeight,
+                    child: Stack(children: [
+                      // background + grid
+                      Positioned.fill(
+                        child: Image.asset(
+                          'assets/background.png',
+                          fit: BoxFit.cover,
+                          errorBuilder: (_,__,___) =>
+                            Container(color: Colors.grey[300]),
+                        ),
                       ),
-                    ),
+                      CustomPaint(
+                        size: Size(designWidth, designHeight),
+                        painter: const GridPainter(
+                          gridSize: 50,
+                          lineColor: Color.fromRGBO(128,128,128,0.5),
+                        ),
+                      ),
+                      // continents
+                      for (final c in ordered)
+                        InteractiveContinent(
+                          key: ValueKey(c.name),
+                          name: c.name,
+                          overlays: c.overlays,
+                          initialPosition: currentPos[c.name]!,
+                          resetCounter: resetCounter,
+                          showFossils: showFossils && !showContinents,
+                          showGlaciers: showGlaciers && !showContinents,
+                          showRocks: showRocks && !showContinents,
+                          rotateMode: rotateMode,
+                          onPositionChanged: _onPositionChanged,
+                          continentScale: continentBaseScale,
+                        ),
+                      // dump coords button
+                     // Positioned(
+                      //  left: 8, top: 8,
+                      //  child: ElevatedButton(
+                      //    onPressed: _dumpCoords,
+                      //    child: const Text('Dump coords'),
+                      //  ),
+                      //),
+                    ]),
                   ),
                 ),
               ),
             ),
+          ),
 
-            // ─── top-right: Reset + Rotate ───────────
-            Positioned(
-              top: 8,
-              right: 8,
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  IconButton(
-                    icon: const Icon(Icons.delete, color: Colors.red),
-                    onPressed: () async {
-                      final confirm = await showDialog<bool>(
-                        context: context,
-                        builder: (_) => AlertDialog(
-                          title: const Text('Reset Positions?'),
-                          content: const Text(
-                            'Are you sure you want to reset all continent positions?'
-                          ),
-                          actions: [
-                            TextButton(
-                              onPressed: () => Navigator.of(context).pop(false),
-                              child: const Text('Cancel'),
-                            ),
-                            TextButton(
-                              onPressed: () => Navigator.of(context).pop(true),
-                              child: const Text('Yes'),
-                            ),
-                          ],
-                        ),
-                      );
-                      if (confirm == true) _resetPositions();
-                    },
-                  ),
-                  IconButton(
-                    icon: Icon(
-                      rotateMode
-                        ? Icons.rotate_right_outlined
-                        : Icons.rotate_right,
-                      color: rotateMode ? Colors.blue : Colors.black87,
-                    ),
-                    tooltip: 'Toggle rotate mode (R)',
-                    onPressed: () =>
-                      setState(() => rotateMode = !rotateMode),
-                  ),
-                ],
-              ),
-            ),
-
-            // ─── bottom-right: hamburger for Layer+Key menu ───
-            Positioned(
-              bottom: 8,
-              right: 8,
-              child: IconButton(
-                icon: const Icon(Icons.menu),
-                color: Colors.black87,
-                onPressed: () => setState(() => showBottomMenu = !showBottomMenu),
-              ),
-            ),
-
-            if (showBottomMenu)
-              Positioned(
-                bottom: 56,
-                right: 8,
-                child: Container(
-                  width: 200,
-                  padding: const EdgeInsets.all(8),
-                  color: Colors.white70,
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      // the key image
-                      SizedBox(
-                        height: 80,
-                        child: _buildKey(),
+          // ─── Top-right: Reset + Rotate ─────────────
+          Positioned(
+            top: 8, right: 8,
+            child: Row(mainAxisSize: MainAxisSize.min, children: [
+              IconButton(
+                icon: const Icon(Icons.delete, color: Colors.red),
+                onPressed: () async {
+                  final ok = await showDialog<bool>(
+                    context: context,
+                    builder: (_) => AlertDialog(
+                      title: const Text('Reset Positions?'),
+                      content: const Text(
+                        'Are you sure you want to reset all positions?'
                       ),
-
-                      const SizedBox(height: 8),
-
-                      // three layer‐select buttons
-                      Row(
-                      children: [
-                        Expanded(
-                          child: OutlinedButton(
-                            style: OutlinedButton.styleFrom(
-                              side: const BorderSide(color: Colors.black87),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(4),
-                              ),
-                              padding: const EdgeInsets.symmetric(vertical: 8),
-                            ),
-                            onPressed: () => setState(() {
-                              showFossils  = true;
-                              showGlaciers = showRocks = false;
-                            }),
-                            child: Image.asset(
-                              'assets/button_fossils.png',
-                              width: 32,
-                              height: 32,
-                              fit: BoxFit.contain,
-                              errorBuilder: (_, __, ___) => const Text('Fossils'),
-                            ),
-                          ),
+                      actions: [
+                        TextButton(
+                          onPressed: () => Navigator.of(context).pop(false),
+                          child: const Text('Cancel'),
                         ),
-                        const SizedBox(width: 4),
-                        Expanded(
-                          child: OutlinedButton(
-                            style: OutlinedButton.styleFrom(
-                              side: const BorderSide(color: Colors.black87),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(4),
-                              ),
-                              padding: const EdgeInsets.symmetric(vertical: 8),
-                            ),
-                            onPressed: () => setState(() {
-                              showGlaciers = true;
-                              showFossils  = showRocks = false;
-                            }),
-                            child: Image.asset(
-                              'assets/button_glaciers.png',
-                              width: 32,
-                              height: 32,
-                              fit: BoxFit.contain,
-                              errorBuilder: (_, __, ___) => const Text('Glaciers'),
-                            ),
-                          ),
-                        ),
-                        const SizedBox(width: 4),
-                        Expanded(
-                          child: OutlinedButton(
-                            style: OutlinedButton.styleFrom(
-                              side: const BorderSide(color: Colors.black87),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(4),
-                              ),
-                              padding: const EdgeInsets.symmetric(vertical: 8),
-                            ),
-                            onPressed: () => setState(() {
-                              showRocks    = true;
-                              showFossils  = showGlaciers = false;
-                            }),
-                            child: Image.asset(
-                              'assets/button_rocks.png',
-                              width: 32,
-                              height: 32,
-                              fit: BoxFit.contain,
-                              errorBuilder: (_, __, ___) => const Text('Rocks'),
-                            ),
-                          ),
+                        TextButton(
+                          onPressed: () => Navigator.of(context).pop(true),
+                          child: const Text('Yes'),
                         ),
                       ],
                     ),
-                    ],
-                  ),
+                  );
+                  if (ok == true) _resetPositions();
+                },
+              ),
+              IconButton(
+                icon: Icon(
+                  rotateMode ? Icons.rotate_right_outlined : Icons.rotate_right,
+                  color: rotateMode ? Colors.blue : Colors.black87,
+                ),
+                tooltip: 'Toggle Rotate Mode (R)',
+                onPressed: () => setState(() => rotateMode = !rotateMode),
+              ),
+            ]),
+          ),
+
+          // ─── Bottom-right: layer buttons ───────────
+          Positioned(
+            bottom: 8, right: 8,
+            child: Row(mainAxisSize: MainAxisSize.min, children: [
+              _layerButton(
+                asset: 'assets/button_fossils.png',
+                label: 'Fossils',
+                active: showFossils,
+                onTap: () => setState(() {
+                  legendLayer = (legendLayer == 'fossils') ? null : 'fossils';
+                  showFossils = true;
+                  showGlaciers = showRocks = showContinents = false;
+                }),
+              ),
+              const SizedBox(width: 4),
+              _layerButton(
+                asset: 'assets/button_glaciers.png',
+                label: 'Glaciers',
+                active: showGlaciers,
+                onTap: () => setState(() {
+                  legendLayer = (legendLayer == 'glaciers') ? null : 'glaciers';
+                  showGlaciers = true;
+                  showFossils = showRocks = showContinents = false;
+                }),
+              ),
+              const SizedBox(width: 4),
+              _layerButton(
+                asset: 'assets/button_rocks.png',
+                label: 'Rocks',
+                active: showRocks,
+                onTap: () => setState(() {
+                  legendLayer = (legendLayer == 'rocks') ? null : 'rocks';
+                  showRocks = true;
+                  showFossils = showGlaciers = showContinents = false;
+                }),
+              ),
+              const SizedBox(width: 4),
+              _layerButton(
+                asset: 'assets/button_continents.png',
+                label: 'Continents',
+                active: showContinents,
+                onTap: () => setState(() {
+                  legendLayer = (legendLayer == 'continents') ? null : 'continents';
+                  showContinents = true;
+                  showFossils = showGlaciers = showRocks = false;
+                }),
+              ),
+            ]),
+          ),
+
+          // ─── Bottom-left: multiline text watermark ───
+          Positioned(
+            bottom: 8,
+            left: 8,
+            child: Opacity(
+              opacity: 1,  // faint watermark
+              child: Text(
+                'Modified from the U.S. Geological Survey\nCreated by Skyler Clagg\nArtwork by Gray Cramer & David Brink-Roby',
+                style: TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w600,
+                  color: Colors.black,
+                  height: 1.3,        // line spacing
                 ),
               ),
-          ],
-        );
+            ),
+          ),
+
+
+          // ─── Legend key (no box) ───────────────────
+          if (legendLayer != null)
+            Positioned(
+              bottom: 56, right: 8,
+              child: Image.asset(
+                'assets/key_$legendLayer.png',
+                width: 200,
+                height: 200,
+                fit: BoxFit.contain,
+                errorBuilder: (_, __, ___) => const SizedBox.shrink(),
+              ),
+            ),
+        ]);
       }),
     );
   }
 
-  /// Returns the correct key‐PNG for the active layer.
-  Widget _buildKey() {
-    String asset;
-    if (showGlaciers)  asset = 'assets/key_glaciers.png';
-    else if (showRocks) asset = 'assets/key_rocks.png';
-    else               asset = 'assets/key_fossils.png';
-
-    return Image.asset(
-      asset,
-      fit: BoxFit.contain,
-      errorBuilder: (_, __, ___) =>
-        const Center(child: Text('Key not found')),
+  Widget _layerButton({
+    required String asset,
+    required String label,
+    required bool active,
+    required VoidCallback onTap,
+  }) {
+    return OutlinedButton(
+      style: OutlinedButton.styleFrom(
+        side: BorderSide(color: active ? Colors.blue : Colors.black87),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
+        padding: const EdgeInsets.all(8),
+      ),
+      onPressed: onTap,
+      child: Image.asset(
+        asset,
+        width: 32,
+        height: 32,
+        fit: BoxFit.contain,
+        errorBuilder: (_, __, ___) => Text(label),
+      ),
     );
   }
 }
@@ -488,20 +456,7 @@ class InteractiveContinent extends StatefulWidget {
   final void Function(String, Offset) onPositionChanged;
   final double continentScale;
 
-  const InteractiveContinent({
-    Key? key,
-    required this.name,
-    required this.overlays,
-    required this.initialPosition,
-    required this.showFossils,
-    required this.showGlaciers,
-    required this.showRocks,
-    required this.rotateMode,
-    required this.onPositionChanged, 
-    required this.resetCounter, 
-    required this.continentScale, 
-    
-  }) : super(key: key);
+  const InteractiveContinent({ Key? key, required this.name, required this.overlays, required this.initialPosition, required this.showFossils, required this.showGlaciers, required this.showRocks, required this.rotateMode, required this.onPositionChanged, required this.resetCounter, required this.continentScale }) : super(key:key);
 
   @override
   _InteractiveContinentState createState() => _InteractiveContinentState();
@@ -516,8 +471,9 @@ class _InteractiveContinentState extends State<InteractiveContinent> {
   bool _dragging = false, _rotating = false;
   late Offset _startPtr, _startPos;
   late double _startRot;
+  
 
-    @override
+  @override
   void initState() {
     super.initState();
     position = widget.initialPosition;
@@ -527,11 +483,10 @@ class _InteractiveContinentState extends State<InteractiveContinent> {
   @override
   void didUpdateWidget(covariant InteractiveContinent old) {
     super.didUpdateWidget(old);
-    // only reset on a true “reset” event, not on every drag
     if (old.resetCounter != widget.resetCounter) {
       setState(() {
         position = widget.initialPosition;
-        rotation = 0.0;                     // reset rotation
+        rotation = 0.0;
       });
     }
   }
@@ -548,7 +503,7 @@ class _InteractiveContinentState extends State<InteractiveContinent> {
     for (int y = 0; y < h; y++) {
       for (int x = 0; x < w; x++) {
         final idx = (y * w + x) * 4;
-        if (_pixels!.getUint8(idx + 3) > 16) {
+        if (_pixels!.getUint8(idx + 3) > 0) {
           minX = min(minX, x);
           minY = min(minY, y);
           maxX = max(maxX, x);
@@ -556,138 +511,112 @@ class _InteractiveContinentState extends State<InteractiveContinent> {
         }
       }
     }
-    _opaqueBounds = Rect.fromLTRB(
-      minX.toDouble(), minY.toDouble(),
-      maxX.toDouble(), maxY.toDouble(),
-    );
+    _opaqueBounds = Rect.fromLTRB(minX.toDouble(), minY.toDouble(), maxX.toDouble(), maxY.toDouble());
     setState(() {});
   }
 
   bool _opaqueHit(Offset local) {
-    if (_image == null || _pixels == null) return true;
+    if (_image == null || _pixels == null) return false;
     final c = Offset(_image!.width/2, _image!.height/2);
-    final m = Matrix4.identity()
-      ..translate(c.dx, c.dy)
-      ..rotateZ(-rotation)
-      ..translate(-c.dx, -c.dy);
+    final m = Matrix4.identity()..translate(c.dx, c.dy)..rotateZ(-rotation)..translate(-c.dx, -c.dy);
     final t = MatrixUtils.transformPoint(m, local);
     final x = t.dx.round(), y = t.dy.round();
     if (x < 0 || y < 0 || x >= _image!.width || y >= _image!.height) return false;
     final idx = (y * _image!.width + x) * 4;
-    return _pixels!.getUint8(idx + 3) > 16;
+    return _pixels!.getUint8(idx + 3) > 0;
+  }
+
+  void _onScaleStart(ScaleStartDetails details) {
+    final box   = context.findRenderObject() as RenderBox;
+    final local = box.globalToLocal(details.focalPoint);
+    if (!_opaqueHit(local)) return;
+    if (details.pointerCount > 1 || widget.rotateMode) {
+      _rotating = true;
+      _startRot = rotation;
+      _startPtr = details.focalPoint;
+    } else {
+      _dragging = true;
+      _startPos = position;
+      _startPtr = details.focalPoint;
+    }
+  }
+
+  void _onScaleUpdate(ScaleUpdateDetails details) {
+    if (_dragging) {
+      final rawdx = _startPos.dx + (details.focalPoint.dx - _startPtr.dx);
+      final rawdy = _startPos.dy + (details.focalPoint.dy - _startPtr.dy);
+      final c  = Offset(_image!.width/2, _image!.height/2);
+      final m  = Matrix4.identity()..translate(c.dx, c.dy)..rotateZ(rotation)..translate(-c.dx, -c.dy);
+      final corners = [
+        _opaqueBounds.topLeft,
+        _opaqueBounds.topRight,
+        _opaqueBounds.bottomRight,
+        _opaqueBounds.bottomLeft,
+      ].map((p) => MatrixUtils.transformPoint(m, p)).toList();
+      final minX = corners.map((o) => o.dx).reduce(min);
+      final maxX = corners.map((o) => o.dx).reduce(max);
+      final minY = corners.map((o) => o.dy).reduce(min);
+      final maxY = corners.map((o) => o.dy).reduce(max);
+      final halfW = (maxX - minX)/2;
+      final halfH = (maxY - minY)/2;
+      final lowerX = (0 - minX) - halfW;
+      final upperX = (designWidth - maxX) + halfW;
+      final lowerY = (0 - minY) - halfH;
+      final upperY = (designHeight - maxY) + halfH;
+      final clampedX = rawdx.clamp(lowerX, upperX);
+      final clampedY = rawdy.clamp(lowerY, upperY);
+      setState(() {
+        position = Offset(clampedX, clampedY);
+        widget.onPositionChanged(widget.name, position);
+      });
+    } else if (_rotating) {
+      final delta = details.pointerCount > 1
+        ? details.rotation
+        : (details.focalPoint.dx - _startPtr.dx) * 0.01;
+      setState(() => rotation = _startRot + delta);
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     if (_image == null || _pixels == null) return const SizedBox.shrink();
-
+    final double logicalW = _opaqueBounds.width * widget.continentScale;
+    final double logicalH = _opaqueBounds.height * widget.continentScale;
     return Positioned(
-      left: position.dx, top: position.dy,
+      left: position.dx,
+      top:  position.dy,
       child: PixelAwareContinent(
         image: _image!,
         pixelData: _pixels!,
         child: MouseRegion(
-      // if rotateMode is on, show the “alias” (rotate) cursor;
-      // otherwise show the standard move cursor
-      cursor: widget.rotateMode
-        ? SystemMouseCursors.alias
-        : SystemMouseCursors.move,
-        child: GestureDetector(
-          behavior: HitTestBehavior.deferToChild,
-          onScaleStart: (details) {
-            final box   = context.findRenderObject() as RenderBox;
-            final local = box.globalToLocal(details.focalPoint);
-            if (!_opaqueHit(local)) return;
-            if (details.pointerCount > 1 || widget.rotateMode) {
-              _rotating = true;
-              _startRot = rotation;
-            } else {
-              _dragging = true;
-              _startPos = position;
-              _startPtr = details.focalPoint;
-            }
-          },
-          onScaleUpdate: (details) {
-            if (_dragging) {
-              final rawdx = _startPos.dx + (details.focalPoint.dx - _startPtr.dx);
-              final rawdy = _startPos.dy + (details.focalPoint.dy - _startPtr.dy);
-
-              final c  = Offset(_image!.width/2, _image!.height/2);
-              final m  = Matrix4.identity()
-                ..translate(c.dx, c.dy)
-                ..rotateZ(rotation)
-                ..translate(-c.dx, -c.dy);
-              final corners = [
-                _opaqueBounds.topLeft,
-                _opaqueBounds.topRight,
-                _opaqueBounds.bottomRight,
-                _opaqueBounds.bottomLeft,
-              ].map((p) => MatrixUtils.transformPoint(m, p)).toList();
-              final minX = corners.map((o) => o.dx).reduce(min);
-              final maxX = corners.map((o) => o.dx).reduce(max);
-              final minY = corners.map((o) => o.dy).reduce(min);
-              final maxY = corners.map((o) => o.dy).reduce(max);
-
-              // allow half the opaque bounds out of view
-              final halfW = (maxX - minX) / 2;
-              final halfH = (maxY - minY) / 2;
-              final lowerX = (0 - minX) - halfW;
-              final upperX = (designWidth - maxX) + halfW;
-              final lowerY = (0 - minY) - halfH;
-              final upperY = (designHeight - maxY) + halfH;
-
-              final clampedX = rawdx.clamp(lowerX, upperX);
-              final clampedY = rawdy.clamp(lowerY, upperY);
-
-              setState(() {
-                position = Offset(clampedX, clampedY);
-                widget.onPositionChanged(widget.name, position);
-              });
-            } else if (_rotating) {
-              final delta = details.pointerCount > 1
-                ? details.rotation
-                : (details.focalPoint.dx - _startPtr.dx) * 0.01;
-              setState(() {
-                rotation = _startRot + delta;
-              });
-            }
-          },
-          onScaleEnd: (_) {
-            _dragging = false;
-            _rotating = false;
-          },
-          child: Transform.scale(
-            scale: widget.continentScale,               // ← apply base scale here
-            alignment: Alignment.center,
+          cursor: widget.rotateMode
+            ? SystemMouseCursors.alias
+            : SystemMouseCursors.move,
           child: Transform.rotate(
             angle: rotation,
             alignment: Alignment.center,
-              child: Stack(
-                children: [
-                  Image.asset('assets/${widget.name}.png'),
+            transformHitTests: true,
+            child: GestureDetector(
+              behavior: HitTestBehavior.deferToChild,
+              onScaleStart: _onScaleStart,
+              onScaleUpdate: _onScaleUpdate,
+              onScaleEnd:(_) { _dragging = _rotating = false; },
+              child: SizedBox(
+                width:  logicalW,
+                height: logicalH,
+                child: Stack(fit:StackFit.expand, children:[
+                  Image.asset('assets/${widget.name}.png', fit:BoxFit.fill),
                   if (widget.showGlaciers && widget.overlays.contains('glaciers'))
-                    Image.asset('assets/${widget.name}_glaciers.png'),
+                    Image.asset('assets/${widget.name}_glaciers.png', fit:BoxFit.fill),
                   if (widget.showFossils && widget.overlays.contains('fossils'))
-                    Image.asset('assets/${widget.name}_fossils.png'),
+                    Image.asset('assets/${widget.name}_fossils.png', fit:BoxFit.fill),
                   if (widget.showRocks && widget.overlays.contains('rocks'))
-                    Image.asset('assets/${widget.name}_rocks.png'),
-                  Positioned(
-                    top: -18, left: 0,
-                    child: Container(
-                      color: Colors.black54,
-                      padding: const EdgeInsets.all(2),
-                      child: Text(
-                        'Off: (${position.dx.toStringAsFixed(1)}, ${position.dy.toStringAsFixed(1)})',
-                        style: const TextStyle(color: Colors.white, fontSize: 10),
-                      ),
-                    ),
-                  ),
-                ],
+                    Image.asset('assets/${widget.name}_rocks.png', fit:BoxFit.fill),
+                ]),
               ),
-            )
+            ),
           ),
         ),
-      ),
       ),
     );
   }

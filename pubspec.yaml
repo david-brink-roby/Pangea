@@ -30,7 +30,6 @@ flutter:
     - assets/south_america.png
     - assets/south_america_glaciers.png
     - assets/south_america_fossils.png
-    - assets/south_america_rocks.png
     - assets/madagascar.png
     - assets/madagascar_glaciers.png
     - assets/madagascar_fossils.png
@@ -40,11 +39,23 @@ flutter:
     - assets/africa_glaciers.png
     - assets/north_america.png
     - assets/north_america_rocks.png
+    - assets/north_america_fossils.png
     - assets/eurasia.png
     - assets/eurasia_rocks.png
-    - assets/arabia.png
+    - assets/eurasia_fossils.png
     - assets/greenland.png
-    - assets/rotate_hint.png
+    - assets/greenland_fossils.png
+    - assets/greenland_rocks.png
+    - assets/key_fossils.png
+    - assets/key_rocks.png
+    - assets/key_glaciers.png
+    - assets/key_continents.png
+    - assets/button_continents.png
+    - assets/button_fossils.png
+    - assets/button_rocks.png
+    - assets/button_glaciers.png
+    - assets/acknowledgements.png
+
   
     
   fonts:
