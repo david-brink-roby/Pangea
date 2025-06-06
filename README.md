@@ -118,10 +118,10 @@ When you significantly change continent images or overlays, re-calibrate startin
 2. **Create or clear** your `docs/` folder and **copy** the new build into it:
    ```bash
      if (Test-Path docs) {
->>    Remove-Item docs\* -Recurse -Force
->>    } else {
->>    New-Item -ItemType Directory docs
->>   }
+    Remove-Item docs\* -Recurse -Force
+    } else {
+    New-Item -ItemType Directory docs
+   }
      Copy-Item -Path build\web\* -Destination docs -Recurse
    ```
 3. **Commit & push** to GitHub:
